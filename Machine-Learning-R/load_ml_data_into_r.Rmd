@@ -1,0 +1,90 @@
+---
+title: "How To Load Your Machine Learning Data Into R"
+author: "James Le"
+date: "1/16/2018"
+output: html_document
+---
+
+You need to be able to load data into R when working on a machine learning problem.
+
+In this short post, you will discover how you can load your data files into R and start your machine learning project.
+
+Let’s get started.
+
+## Access To Your Data
+The most common way to work with data in machine learning is in data files.
+
+Data may originally be stored in all manner of formats and diverse locations. For example:
+
+* Relational database tables
+
+* XML files
+
+* JSON files
+
+* Fixed-width formatted file
+
+* Spreadsheet file (e.g. Microsoft Office)
+
+You need to consolidate your data into a single file with rows and columns before you can work with it on a machine learning project. The standard format for representing a machine learning dataset is a CSV file. This is because machine learning algorithms, for the most part, work with data in tabular format (e.g. a matrix or input and output vectors).
+
+Datasets in R are often represented as a matrix or data frame structure.
+
+The first step of a machine learning project in R is loading your data into R as a matrix or data frame.
+
+## Load CSV Data Files In R
+This section provides recipes that you can copy into your own machine learning projects and adapt to load data into R.
+
+### Load Data From CSV File
+This example shows the loading of the iris dataset from a CSV file. This recipe will load a CSV file without a header (e.g. column names) located in the current directory into R as a data frame.
+
+```{r}
+# define the filename
+# filename <- "iris.csv"
+# load the CSV file from the local directory
+# dataset <- read.csv(filename, header=FALSE)
+# preview the first 5 rows
+# head(dataset)
+```
+
+This recipe is useful if you want to store the data locally with your R scripts, such as in a project managed under revision control.
+
+If the data is not in your local directory, you can either:
+
+1 - Specify the full path to the dataset on your local environment.
+
+2 - Use the setwd() function to set your current working directory to where the dataset is located.
+
+### Load Data From CSV URL
+This example shows the loading of the iris data from a CSV file located on the UCI Machine Learning Repository. This recipe will load a CSV file without a header from a URL into R as a data frame.
+
+```{r}
+# load the library
+library(RCurl)
+# specify the URL for the Iris data CSV
+urlfile <-'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+# download the file
+downloaded <- getURL(urlfile, ssl.verifypeer=FALSE)
+# treat the text data as a steam so we can read from it
+connection <- textConnection(downloaded)
+# parse the downloaded data as CSV
+dataset <- read.csv(connection, header=FALSE)
+# preview the first 5 rows
+head(dataset)
+```
+
+This recipe is useful if your dataset is stored on a server, such as on your GitHub account. It is also useful if you want to use datasets from the UCI Machine Learning Repository but do not want to store them locally.
+
+### Data In Other Formats
+You may have data stored in format other than CSV.
+
+I would recommend that you use standard tools and libraries to convert it to CSV format before working with the data in R. Once converted, you can then use the recipes above to work with it.
+
+## Summary
+In this short post, you discovered how you can load your data into R.
+
+You learned two recipes for loading data:
+
+* Load data from a local CSV file.
+
+* Load data from a CSV file located on a server.
