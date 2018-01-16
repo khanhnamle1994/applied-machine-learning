@@ -1,0 +1,256 @@
+---
+title: "Better Understand Your Data in R Using Descriptive Statistics (8 recipes you can use today)"
+author: "James Le"
+date: "1/16/2018"
+output: html_document
+---
+
+You must become intimate with your data.
+
+Any machine learning models that you build are only as good as the data that you provide them. The first step in understanding your data is to actually look at some raw values and calculate some basic statistics.
+
+In this post, you will discover how you can quickly get a handle on your dataset with descriptive statistics examples and recipes in R.
+
+These recipes are perfect for you if you are a developer just getting started using R for machine learning.
+
+Let’s get started.
+
+# You Must Understand Your Data
+
+Understanding the data that you have is critically important.
+
+You can run techniques and algorithms on your data, but it is not until you take the time to truly understand your dataset that you can fully understand the context of the results you achieve.
+
+## Better Understanding Equals Better Results
+
+A deeper understanding of your data will give you better results.
+
+Taking the time to study the data you have will help you in ways that are less obvious. You build an intuition for the data and for the entities that individual records or observations represent. These can bias you towards specific techniques (for better or worse), but you can also be inspired.
+
+For example, examine your data in detail may trigger ideas for specific techniques to investigate:
+
+* Data Cleaning. You may discover missing or corrupt data and think of various data cleaning operations to perform such as marking or removing bad data and imputing missing data.
+
+* Data Transforms. You may discover that some attributes have familiar distributions such as Gaussian or exponential giving you ideas of scaling or log or other transforms you could apply.
+
+* Data Modeling. You may notice properties of the data such as distributions or data types that suggest the use (or to not use) specific machine learning algorithms.
+
+## Use Descriptive Statistics
+
+You need to look at your data. And you need to look at your data from different perspectives.
+
+Inspecting your data will help you to build up your intuition and prompt you to start asking questions about the data that you have.
+
+Multiple perspectives will challenge you to think about the data from different perspectives, helping you to ask more and better questions.
+
+Two methods for looking at your data are:
+
+1. Descriptive Statistics
+
+2. Data Visualization
+
+The first and best place to start is to calculate basic summary descriptive statistics on your data.
+
+You need to learn the shape, size, type and general layout of the data that you have.
+
+Let’s look at some ways that you can summarize your data using R.
+
+# Summarize Data in R With Descriptive Statistics
+
+In this section, you will discover 8 quick and simple ways to summarize your dataset.
+
+Each method is briefly described and includes a recipe in R that you can run yourself or copy and adapt to your own needs.
+
+## 1. Peek At Your Data
+
+The very first thing to do is to just look at some raw data from your dataset.
+
+If your dataset is small you might be able to display it all on the screen. Often it is not, so you can take a small sample and review that.
+
+```{r}
+# load the library
+library(mlbench)
+# load the dataset
+data(PimaIndiansDiabetes)
+# display first 20 rows of data
+head(PimaIndiansDiabetes, n=20)
+```
+
+The head function will display the first 20 rows of data for you to review and think about.
+
+## 2. Dimensions of Your Data
+
+How much data do you have? You may have a general idea, but it is much better to have a precise figure.
+
+If you have a lot of instances, you may need to work with a smaller sample of the data so that model training and evaluation is computationally tractable. If you have a vast number of attributes, you may need to select those that are most relevant. If you have more attributes than instances you may need to select specific modeling techniques.
+
+```{r}
+# load the libraries
+library(mlbench)
+# load the dataset
+data(PimaIndiansDiabetes)
+# display the dimensions of the dataset
+dim(PimaIndiansDiabetes)
+```
+
+This shows the rows and columns of your loaded dataset.
+
+## 3. Data Types
+
+You need to know the types of the attributes in your data.
+
+This is invaluable. The types will indicate the types of further analysis, types of visualization and even the types of machine learning algorithms that you can use.
+
+Additionally, perhaps some attributes were loaded as one type (e.g. integer) and could in-fact be represented as another type (a categorical factor). Inspecting the types helps expose these  issues and spark ideas early.
+
+```{r}
+# load library
+library(mlbench)
+# load dataset
+data(BostonHousing)
+# list types for each attribute
+sapply(BostonHousing, class)
+```
+
+This lists the data type of each attribute in your dataset.
+
+## 4. Class Distribution
+In a classification problem, you must know the proportion of instances that belong to each class value.
+
+This is important because it may highlight an imbalance in the data, that if severe may need to be addressed with rebalancing techniques. In the case of a multi-class classification problem, it may expose class with a small or zero instances that may be candidates for removing from the dataset.
+
+```{r}
+# load the libraries
+library(mlbench)
+# load the dataset
+data(PimaIndiansDiabetes)
+# distribution of class variable
+y <- PimaIndiansDiabetes$diabetes
+cbind(freq=table(y), percentage=prop.table(table(y))*100)
+```
+
+This recipe creates a useful table showing the number of instances that belong to each class as well as the percentage that this represents from the entire dataset.
+
+## 5. Data Summary
+There is a most valuable function called summary() that summarizes each attribute in your dataset in turn. This is a most valuable function.
+
+The function creates a table for each attribute and lists a breakdown of values. Factors are described as counts next to each class label. Numerical attributes are described as:
+
+* Min
+
+* 25th percentile
+
+* Median
+
+* Mean
+
+* 75th percentile
+
+* Max
+
+The breakdown also includes an indication of the number of missing values for an attribute (marked N/A).
+
+```{r}
+# load the iris dataset
+data(iris)
+# summarize the dataset
+summary(iris)
+```
+
+You can see that this recipe produces a lot of information for you to review. Take your time and work through each attribute in turn.
+
+## 6. Standard Deviations
+
+One thing missing from the summary() function above are the standard deviations.
+
+The standard deviation along with the mean are useful to know if the data has a Gaussian (or nearly Gaussian) distribution. For example, it can useful for a quick and dirty outlier removal tool, where any values that are more than three times the standard deviation from the mean are outside of 99.7 of the data.
+
+```{r}
+# load the libraries
+library(mlbench)
+# load the dataset
+data(PimaIndiansDiabetes)
+# calculate standard deviation for all attributes
+sapply(PimaIndiansDiabetes[,1:8], sd)
+```
+
+This calculates the standard deviation for each numeric attribute in the dataset.
+
+## 7. Skewness
+
+If a distribution looks kind-of-Gaussian but is pushed far left or right it is useful to know the skew.
+
+Getting a feeling for the skew is much easier with plots of the data, such as a histogram or density plot. It is harder to tell from looking at means, standard deviations and quartiles.
+
+Nevertheless, calculating the skew up front gives you a reference that you can use later if you decide to correct the skew for an attribute.
+
+```{r}
+# load libraries
+library(mlbench)
+library(e1071)
+# load the dataset
+data(PimaIndiansDiabetes)
+# calculate skewness for each variable
+skew <- apply(PimaIndiansDiabetes[,1:8], 2, skewness)
+# display skewness, larger/smaller deviations from 0 show more skew
+print(skew)
+```
+
+The further the distribution of the skew value from zero, the larger the skew to the left (negative skew value) or right (positive skew value).
+
+## 8. Correlations
+
+It is important to observe and think about how attributes relate to each other.
+
+For numeric attributes, an excellent way to think about attribute-to-attribute interactions is to calculate correlations for each pair of attributes.
+
+```{r}
+# load the libraries
+library(mlbench)
+# load the dataset
+data(PimaIndiansDiabetes)
+# calculate a correlation matrix for numeric variables
+correlations <- cor(PimaIndiansDiabetes[,1:8])
+# display the correlation matrix
+print(correlations)
+```
+
+This creates a symmetrical table of all pairs of attribute correlations for numerical data. Deviations from zero show more positive or negative correlation. Values above 0.75 or below -0.75 are perhaps more interesting as they show a high correlation. Values of 1 and -1 show full positive or negative correlation.
+
+## More Recipes
+
+This list of data summarization methods is by no means complete, but they are enough to quickly give you a strong initial understanding of your dataset.
+
+Some data summarization that you could investigate beyond the list of recipes above would be to look at statistics for subsets of your data. Consider looking into the aggregate() function in R.
+
+# Tips To Remember
+This section gives you some tips to remember when reviewing your data using summary statistics.
+
+* Review the numbers. Generating the summary statistics is not enough. Take a moment to pause, read and really think about the numbers you are seeing.
+
+* Ask why. Review your numbers and ask a lot of questions. How and why are you seeing specific numbers? Think about how the numbers relate to the problem domain in general and specific entities that observations relate to.
+
+* Write down ideas. Write down your observations and ideas. Keep a small text file or notepad and jot down all of the ideas for how variables may relate, for what numbers mean, and ideas for techniques to try later. The things you write down now while the data is fresh will be very valuable later when you are trying to think up new things to try.
+
+# Summary
+In this post, you discovered the importance of describing your dataset before you start work on your machine learning project.
+
+You discovered 8 different ways to summarize your dataset using R:
+
+1. Peek At Your Data
+
+2. Dimensions of Your Data
+
+3. Data Types
+
+4. Class Distribution
+
+5. Data Summary
+
+6. Standard Deviations
+
+7. Skewness
+
+8. Correlations
+
+You also now have recipes that you can copy and paste into your project.
