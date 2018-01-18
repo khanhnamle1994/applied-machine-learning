@@ -1,0 +1,306 @@
+---
+title: "How to Evaluate Machine Learning Algorithms with R"
+author: "James Le"
+date: "1/18/2018"
+output: html_document
+---
+
+What algorithm should you use on your dataset?
+
+This is the most common question in applied machine learning. It’s a question that can only be answered by trial and error, or what I call: spot-checking algorithms.
+
+In this post you will discover how to spot check algorithms on a dataset using R. Including the selection of test options, evaluation metrics, and algorithms.
+
+You can use the code in this post as a template for spot checking machine learning algorithms on your own problems.
+
+Let’s get started.
+
+# Best Algorithm For a Problem
+You want the most accurate model for your dataset. That is the goal of predictive modeling.
+
+No one can tell you what algorithm to use on your dataset to get the best results. If you or anyone knew what algorithm gave the best results for a specific dataset, then you probably would not need to use machine learning in the first place because of your deep knowledge of the problem.
+
+We cannot know beforehand the best algorithm representation or learning algorithm for that representation to use. We don’t even know the best parameters to use for algorithms that we could try.
+
+We need a strategy to find the best algorithm for our dataset.
+
+## Use Past Experience To Choose An Algorithm
+One way that you could choose an algorithm for a problem is to reply on experience.
+
+This could be your experience with working on similar problems in the past. It could also be the collective experience of the field where you refer to papers, books and other resources for similar problems to get an idea of what algorithms have worked well in the past.
+
+This is a good start, but this should not be where you stop.
+
+## Use Trial And Error To Choose An Algorithm
+The most robust way to discover good or even best algorithms for your dataset is by trial and error. Evaluate a diverse set of algorithms on your dataset and see what works and drop what doesn’t.
+
+I call this process spot-checking algorithms.
+
+Once you have a short list of algorithms that you know are good at picking out the structure of your problem, you can focus your efforts on those algorithms.
+
+You can improve the results of candidate algorithms by either tuning the algorithm parameters or by combining the predictions of multiple models using ensemble methods.
+
+Next, let’s take a look at how we can evaluate multiple machine algorithms on a dataset in R.
+
+# Spot Check Algorithms in R
+In this section you will work through a case study of evaluating a suite of algorithms for a test problem in R.
+
+The test problem used in this example is a binary classification dataset from the UCI Machine Learning Repository call the Pima Indians dataset. The data describes medical details for female patients and boolean output variable as to whether they had an onset of diabetes within five years of their medical evaluation.
+
+This case study is broken down into 3 sections:
+
+1. Defining a test harness.
+
+2. Building multiple predictive models from the data.
+
+3. Comparing models and selecting a short list.
+
+We will be using the caret package in R as it provides an excellent interface into hundreds of different machine learning algorithms and useful tools for evaluating and comparing models.
+
+Let’s define the test harness
+
+## 1. Test Harness
+The test harness is comprised of three key elements:
+
+1. The dataset we will use to train models.
+
+2. The test options used to evaluate a model (e.g. resampling method).
+
+3. The metric we are interested in measuring and comparing.
+
+### Test Dataset
+The dataset we use to spot check algorithms should be representative of our problem, but it does not have to be all of our data.
+
+Spot checking algorithms must be fast. If we have a large dataset, it could cause some of the more computationally intensive algorithms we want to check to take a long time to train.
+
+When spot checking a good rule of thumb I use is that each algorithm should train within 1-to-2 minutes.(ideally within 30 seconds). I find that a less than 10,000 instances (rows) is often a good size, but this will vary from dataset to dataset.
+
+If you have a large dataset, take some different random samples and one simple model (glm) and see how long it takes to train. Select a sample size that falls within the sweet spot.
+
+We can investigate the effect that sample size has on our short list of well performing algorithms later.
+
+Also, you can repeat this experiment later with a larger dataset, once you have a smaller subset of algorithms that look promising.
+
+Let’s load libraries and our diabetes dataset. It is distributed with the mlbench package, so we can just load it up.
+
+```{r}
+# load libraries
+library(mlbench)
+library(caret)
+ 
+# load data
+data(PimaIndiansDiabetes)
+# rename dataset to keep code below generic
+dataset <- PimaIndiansDiabetes
+```
+
+There are only 768 instances, so in this case study we will use all of this data to spot check our algorithms.
+
+Note, that on a full end-to-end project I would recommend holding back a validation dataset to get an objective final evaluation of the very best performing model.
+
+### Test Options
+Test options refers to the technique used to evaluate the accuracy of a model on unseen data. They are often referred to as resampling methods in statistics.
+
+Test options I’d generally recommend are:
+
+* Train/Test split: if you have a lot of data and determine you need a lot of data to build accurate models
+
+* Cross Validation: 5 folds or 10 folds provide a commonly used tradeoff of speed of compute time and generalize error estimate.
+
+* Repeated Cross Validation: 5- or 10-fold cross validation and 3 or more repeats to give a more robust estimate, only if you have a small dataset and can afford the time.
+
+In this case study we will use 10-fold cross validation with 3 repeats.
+
+```{r}
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+seed <- 7
+```
+
+Note that we assigning a random number seed to a variable, so that we can re-set the random number generator before we train each algorithm.
+
+This is important to ensure that each algorithm is evaluated on exactly the same splits of data, allow for true apples to apples comparisons later.
+
+### Test Metric
+There are many possible evaluation metrics to chose from. Caret provides a good selection and you can use your own if needed.
+
+Some good test metrics to use for different problem types include:
+
+Classification:
+
+* Accuracy: x correct divided by y total instances. Easy to understand and widely used.
+
+* Kappa: easily understood as accuracy that takes the base distribution of classes into account.
+
+Regression:
+
+* RMSE: root mean squared error. Again, easy to understand and widely used.
+
+* Rsquared: the goodness of fit or coefficient of determination.
+
+Other popular measures include ROC and LogLoss.
+
+The evaluation metric is specified the call to the train() function for a given model, so we will define the metric now for use with all of the model training later.
+
+```{r}
+metric <- "Accuracy"
+```
+
+## 2. Model Building
+There are three concerns when selecting models to spot check:
+
+1. What models to actually choose.
+
+2. How to configure their arguments.
+
+3. Preprocessing of the data for the algorithm.
+
+### Algorithms
+It is important to have a good mix of algorithm representations (lines, trees, instances, etc.) as well as algorithms for learning those representations.
+
+A good rule of thumb I use is “a few of each”, for example in the case of binary classification:
+
+* Linear methods: Linear Discriminant Analysis and Logistic Regression.
+
+* Non-Linear methods: Neural Network, SVM, kNN and Naive Bayes
+
+* Trees and Rules: CART, J48 and PART
+
+* Ensembles of Trees: C5.0, Bagged CART, Random Forest and Stochastic Gradient Boosting
+
+You want some low complexity easy to interpret methods in there (like LDA and kNN) in case they do well, you can adopt them. You also want some sophisticated methods in there (like random forest) to see if the problem can even be learned and to start building up expectations of accuracy.
+
+How many algorithms? At least 10-to-20 different algorithms.
+
+### Algorithm Configuration
+Almost all machine learning algorithms are parameterized, requiring that you specify their arguments.
+
+The good thing is, most algorithm parameters have heuristics that you can use to provide a first past configuration of the algorithm to get the ball rolling.
+
+When we are spot checking, we do not want to be trying many variations of algorithm parameters, that comes later when improving results. We also want to give each algorithm a chance to show its stuff.
+
+One aspect of the caret package in R is that it helps with tuning algorithm parameters. It can also estimate good defaults (via the automatic tuning functionality and the tunelength argument to the train() function).
+
+I recommend using the defaults for most if not all algorithms when spot checking, unless you look up some sensible defaults or have some experience with a given algorithm.
+
+### Data Preprocessing
+Some algorithms perform a whole lot better with some basic data preprocessing.
+
+You want to give each algorithm a good fair chance of shining, so it is important to include any required preprocessing in with the training of those algorithms that do require it.
+
+For example, many instance based algorithms work a lot better if all input variables have the same scale.
+
+Fortunately, the train() function in caret lets you specify preprocessing of the data to perform prior to training. The transforms you need are provided to the preProcess argument as a list and are executed on the data sequentially
+
+The most useful transform is to scale and center the data via. For example:
+
+```{r}
+preProcess=c("center", "scale")
+```
+
+### Algorithm Spot Check
+Below are the models that we will spot check for this diabetes case study.
+
+```{r}
+# Linear Discriminant Analysis
+set.seed(seed)
+fit.lda <- train(diabetes~., data=dataset, method="lda", metric=metric, preProc=c("center", "scale"), trControl=control)
+# Logistic Regression
+set.seed(seed)
+fit.glm <- train(diabetes~., data=dataset, method="glm", metric=metric, trControl=control)
+# GLMNET
+set.seed(seed)
+fit.glmnet <- train(diabetes~., data=dataset, method="glmnet", metric=metric, preProc=c("center", "scale"), trControl=control)
+# SVM Radial
+set.seed(seed)
+fit.svmRadial <- train(diabetes~., data=dataset, method="svmRadial", metric=metric, preProc=c("center", "scale"), trControl=control, fit=FALSE)
+# kNN
+set.seed(seed)
+fit.knn <- train(diabetes~., data=dataset, method="knn", metric=metric, preProc=c("center", "scale"), trControl=control)
+# Naive Bayes
+set.seed(seed)
+fit.nb <- train(diabetes~., data=dataset, method="nb", metric=metric, trControl=control)
+# CART
+set.seed(seed)
+fit.cart <- train(diabetes~., data=dataset, method="rpart", metric=metric, trControl=control)
+# C5.0
+set.seed(seed)
+fit.c50 <- train(diabetes~., data=dataset, method="C5.0", metric=metric, trControl=control)
+# Bagged CART
+set.seed(seed)
+fit.treebag <- train(diabetes~., data=dataset, method="treebag", metric=metric, trControl=control)
+# Random Forest
+set.seed(seed)
+fit.rf <- train(diabetes~., data=dataset, method="rf", metric=metric, trControl=control)
+# Stochastic Gradient Boosting (Generalized Boosted Modeling)
+set.seed(seed)
+fit.gbm <- train(diabetes~., data=dataset, method="gbm", metric=metric, trControl=control, verbose=FALSE)
+```
+
+You can see a good mixture of algorithm types.
+
+You can see that all algorithms use the default (automatically estimated) algorithm parameters, there are no tune grids (how caret tunes algorithms).
+
+You can also see that those algorithms that benefit from rescaled data have the preProcess argument set.
+
+### 3. Model Selection
+Now that we have trained a large and diverse list of models, we need to evaluate and compare them.
+
+We are not looking for a best model at this stage. The algorithms have not been tuned and can all likely do a lot better than the results you currently see.
+
+The goal now is to select a handful, perhaps 2-to-5 diverse and well performing algorithms to investigate further.
+
+```{r}
+results <- resamples(list(lda=fit.lda, logistic=fit.glm, glmnet=fit.glmnet,
+	svm=fit.svmRadial, knn=fit.knn, nb=fit.nb, cart=fit.cart, c50=fit.c50,
+	bagging=fit.treebag, rf=fit.rf, gbm=fit.gbm))
+# Table comparison
+summary(results)
+```
+
+You can see that we have summarized the results of the algorithms as a table.
+
+It is also useful to review the results using a few different visualization techniques to get an idea of the mean and spread of accuracies.
+
+```{r}
+# boxplot comparison
+bwplot(results)
+# Dot-plot comparison
+dotplot(results)
+```
+
+From these results, it looks like linear methods do well on this problem. I would probably investigate logistic, lda, glmnet, and gbm further.
+
+If I had more data, I would probably repeat the experiment with a large sample and see if the large dataset improve the performance of any of the tree methods (it often does).
+
+# Tips For Good Algorithm Spot Checking
+Below are some tips that you can use to get good at evaluating machine learning algorithms in R.
+
+* Speed. Get results fast. Use small samples of your data and simple estimates for algorithm parameters. Turn around should be minutes to an hour.
+
+* Diversity. Use a diverse selection of algorithms including representations and different learning algorithms for the same type of representation.
+
+* Scale-up. Don’t be afraid to schedule follow-up spot-check experiments with larger data samples. These can be run overnight or on larger computers and can be good to flush out those algorithms that only do well with larger samples (e.g. trees).
+
+* Short-list. Your goal is to create a shortlist of algorithms to investigate further, not optimize accuracy (not yet).
+
+* Heuristics. Best practice algorithm configurations and algorithms known to be suited to problems like your are an excellent place to start. Use them to seed your spot-check experiments. Some algorithms only start to show that they are accurate with specific parameter configurations.
+
+# You Can Spot Check Algorithms in R
+You do not need to be a machine learning expert. You can get started by running the case study above and reviewing the results. You can dive deeper by reading up on the R functions and machine learning algorithms used in the case study.
+
+You do not need to be an R programmer. The case study in this post is complete and will produce a result. You can copy it, run it on your workstation and use it as a template on your current or next project.
+
+You do not need to know how to configure algorithms. The train() function in R can automatically estimate reasonable defaults as a starting point. You do not need to specify algorithm parameters yet. You may need to later during tuning and the help for specific machine learning functions in R often also provide example parameters that you can use, as well as research papers on the algorithms themselves.
+
+You do not need to collect your own data. There are many R packages that provide, small standard, in-memory datasets that you can use to practice classification and regression machine learning problems. In this example we used the mlbench package.
+
+You do not need a lot of data. Small samples of your data are good for spot checking algorithms. You want a result quickly and small data samples are the best way to achieve that.
+
+# Summary
+In this post you discovered the importance of spot checking machine learning algorithms on your problem.
+
+You discovered that spot checking is the best way to find the good and even best machine learning algorithms for a given dataset.
+
+You worked through a case study in R using the caret package and evaluated more than 10 different algorithms on a binary classification problem.
+
+You now have a template for spot checking algorithms that you can use on your current or next machine learning project.
