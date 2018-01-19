@@ -1,0 +1,212 @@
+---
+title: "Tune Machine Learning Algorithms in R"
+author: "James Le"
+date: "1/19/2018"
+output: html_document
+---
+
+It is difficult to find a good machine learning algorithm for your problem. But once you do, how do you get the best performance out of it.
+
+In this post you will discover three ways that you can tune the parameters of a machine learning algorithm in R.
+
+Walk through a real example step-by-step with working code in R. Use the code as a template to tune machine learning algorithms on your current or next machine learning project.
+
+# Get Better Accuracy From Top Algorithms
+It is difficult to find a good or even a well-performing machine learning algorithm for your dataset.
+
+Through a process of trial and error you can settle on a short list of algorithms that show promise, but how do you know which is the best.
+
+You could use the default parameters for each algorithm. These are the parameters set by rules of thumb or suggestions in books and research papers. But how do you know the algorithms that you are settling on are showing their best performance?
+
+## Use Algorithm Tuning To Search For Algorithm Parameters
+The answer is to search for good or even best combinations of algorithm parameters for your problem.
+
+You need a process to tune each machine learning algorithm to know that you are getting the most out of it. Once tuned, you can make an objective comparison between the algorithms on your shortlist.
+
+Searching for algorithm parameters can be difficult, there are many options, such as:
+
+* What parameters to tune?
+
+* What search method to use to locate good algorithm parameters?
+
+* What test options to use to limit overfitting the training data?
+
+# Tune Machine Learning Algorithms in R
+You can tune your machine learning algorithm parameters in R.
+
+Generally, the approaches in this section assume that you already have a short list of well-performing machine learning algorithms for your problem from which you are looking to get better performance.
+
+An excellent way to create your shortlist of well-performing algorithms is to use the caret package.
+
+In this section we will look at three methods that you can use in R to tune algorithm parameters:
+
+1. Using the caret R package.
+
+2.Using tools that come with the algorithm.
+
+3. Designing your own parameter search.
+
+Before we start tuning, let’s setup our environment and test data.
+
+## Test Setup
+Let’s take a quick look at the data and the algorithm we will use in this case study.
+
+### Test Dataset
+In this case study, we will use the sonar test problem.
+
+This is a dataset from the UCI Machine Learning Repository that describes radar returns as either bouncing off metal or rocks.
+
+It is a binary classification problem with 60 numerical input features that describe the properties of the radar return. You can learn more about this problem here: Sonar Dataset. You can see world class published results for this dataset here: Accuracy on the Sonar Dataset.
+
+This is not a particularly difficult dataset, but is non-trivial and interesting for this example.
+
+Let’s load the required libraries and load the dataset from the mlbench package.
+
+```{r}
+library(randomForest)
+library(mlbench)
+library(caret)
+ 
+# Load Dataset
+data(Sonar)
+dataset <- Sonar
+x <- dataset[,1:60]
+y <- dataset[,61]
+```
+
+### Test Algorithm
+We will use the popular Random Forest algorithm as the subject of our algorithm tuning.
+
+Random Forest is not necessarily the best algorithm for this dataset, but it is a very popular algorithm and no doubt you will find tuning it a useful exercise in you own machine learning work.
+
+When tuning an algorithm, it is important to have a good understanding of your algorithm so that you know what affect the parameters have on the model you are creating.
+
+In this case study, we will stick to tuning two parameters, namely the mtry and the ntree parameters that have the following affect on our random forest model. There are many other parameters, but these two parameters are perhaps the most likely to have the biggest effect on your final accuracy.
+
+Direct from the help page for the randomForest() function in R:
+
+* mtry: Number of variables randomly sampled as candidates at each split.
+
+* ntree: Number of trees to grow.
+
+Let’s create a baseline for comparison by using the recommend defaults for each parameter and mtry=floor(sqrt(ncol(x))) or mtry=7 and ntree=500.
+
+```{r}
+# Create model with default paramters
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+seed <- 7
+metric <- "Accuracy"
+set.seed(seed)
+mtry <- sqrt(ncol(x))
+tunegrid <- expand.grid(.mtry=mtry)
+rf_default <- train(Class~., data=dataset, method="rf", metric=metric, tuneGrid=tunegrid, trControl=control)
+print(rf_default)
+```
+
+We can see our estimated accuracy is 84.4%.
+
+## 1. Tune Using Caret
+The caret package in R provides an excellent facility to tune machine learning algorithm parameters.
+
+Not all machine learning algorithms are available in caret for tuning. The choice of parameters is left to the developers of the package, namely Max Khun. Only those algorithm parameters that have a large effect (e.g. really require tuning in Khun’s opinion) are available for tuning in caret.
+
+As such, only mtry parameter is available in caret for tuning. The reason is its effect on the final accuracy and that it must be found empirically for a dataset.
+
+The ntree parameter is different in that it can be as large as you like, and continues to increases the accuracy up to some point. It is less difficult or critical to tune and could be limited more by compute time available more than anything.
+
+### Random Search
+One search strategy that we can use is to try random values within a range.
+
+This can be good if we are unsure of what the value might be and we want to overcome any biases we may have for setting the parameter (like the suggested equation above).
+
+Let’s try a random search for mtry using caret:
+
+```{r}
+# Random Search
+control <- trainControl(method="repeatedcv", number=10, repeats=3, search="random")
+set.seed(seed)
+mtry <- sqrt(ncol(x))
+rf_random <- train(Class~., data=dataset, method="rf", metric=metric, tuneLength=15, trControl=control)
+print(rf_random)
+plot(rf_random)
+```
+
+Note, that we are using a test harness similar to that which we would use to spot check algorithms. Both 10-fold cross-validation and 3 repeats slows down the search process, but is intended to limit and reduce overfitting on the training set. It won’t remove overfitting entirely. Holding back a validation set for final checking is a great idea if you can spare the data.
+
+We can see that the most accurate value for mtry was 10 with an accuracy of 84.1%.
+
+### Grid Search
+Another search is to define a grid of algorithm parameters to try.
+
+Each axis of the grid is an algorithm parameter, and points in the grid are specific combinations of parameters. Because we are only tuning one parameter, the grid search is a linear search through a vector of candidate values.
+
+```{r}
+control <- trainControl(method="repeatedcv", number=10, repeats=3, search="grid")
+set.seed(seed)
+tunegrid <- expand.grid(.mtry=c(1:15))
+rf_gridsearch <- train(Class~., data=dataset, method="rf", metric=metric, tuneGrid=tunegrid, trControl=control)
+print(rf_gridsearch)
+plot(rf_gridsearch)
+```
+
+We can see that the most accurate value for mtry was 11 with an accuracy of 84.54%.
+
+## 2. Tune Using Algorithm Tools
+Some algorithms provide tools for tuning the parameters of the algorithm.
+
+For example, the random forest algorithm implementation in the randomForest package provides the tuneRF() function that searches for optimal mtry values given your data.
+
+```{r}
+# Algorithm Tune (tuneRF)
+set.seed(seed)
+bestmtry <- tuneRF(x, y, stepFactor=1.5, improve=1e-5, ntree=500)
+print(bestmtry)
+```
+
+You can see that the most accurate value for mtry was 10 with an OOBError of 0.1442308.
+
+This does not really match up with what we saw in the caret repeated cross validation experiment above, where mtry=10 gave an accuracy of 82.04%. Nevertheless, it is an alternate way to tune the algorithm.
+
+## 3. Craft Your Own Parameter Search
+Often you want to search for both the parameters that must be tuned (handled by caret) and the those that need to be scaled or adapted more generally for your dataset.
+
+You have to craft your own parameter search.
+
+### Tune Manually
+We want to keep using caret because it provides a direct point of comparison to our previous models (apples to apples, even the same data splits) and because of the repeated cross validation test harness that we like as it reduces the severity of overfitting.
+
+One approach is to create many caret models for our algorithm and pass in a different parameters directly to the algorithm manually. Let’s look at an example doing this to evaluate different values for ntree while holding mtry constant.
+
+```{r}
+# Manual Search
+control <- trainControl(method="repeatedcv", number=10, repeats=3, search="grid")
+tunegrid <- expand.grid(.mtry=c(sqrt(ncol(x))))
+modellist <- list()
+for (ntree in c(1000, 1500, 2000, 2500)) {
+	set.seed(seed)
+	fit <- train(Class~., data=dataset, method="rf", metric=metric, tuneGrid=tunegrid, trControl=control, ntree=ntree)
+	key <- toString(ntree)
+	modellist[[key]] <- fit
+}
+# compare results
+results <- resamples(modellist)
+summary(results)
+dotplot(results)
+```
+
+You can see that the most accuracy value for ntree was perhaps 2000 with a mean accuracy of 84.23% (a lift over our very first experiment using the default mtry value).
+
+The results perhaps suggest an optimal value for ntree between 2000 and 2500. Also note, we held mtry constant at the default value. We could repeat the experiment with a possible better mtry=2 from the experiment above, or try combinations of of ntree and mtry in case they have interaction effects.
+
+# Summary
+In this post you discovered the importance of tuning well-performing machine learning algorithms in order to get the best performance from them.
+
+You worked through an example of tuning the Random Forest algorithm in R and discovered three ways that you can tune a well-performing algorithm.
+
+1. Using the caret R package.
+
+2. Using tools that come with the algorithm.
+
+3. Designing your own parameter search.
+
+You now have a worked example and template that you can use to tune machine learning algorithms in R on your current or next project.
