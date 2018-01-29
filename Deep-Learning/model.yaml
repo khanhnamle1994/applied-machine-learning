@@ -1,0 +1,60 @@
+backend: !!python/unicode 'tensorflow'
+class_name: Sequential
+config:
+- class_name: Dense
+  config:
+    activation: relu
+    activity_regularizer: null
+    batch_input_shape: !!python/tuple [null, 8]
+    bias_constraint: null
+    bias_initializer:
+      class_name: Zeros
+      config: {}
+    bias_regularizer: null
+    dtype: float32
+    kernel_constraint: null
+    kernel_initializer:
+      class_name: RandomUniform
+      config: {maxval: 0.05, minval: -0.05, seed: null}
+    kernel_regularizer: null
+    name: dense_1
+    trainable: true
+    units: 12
+    use_bias: true
+- class_name: Dense
+  config:
+    activation: relu
+    activity_regularizer: null
+    bias_constraint: null
+    bias_initializer:
+      class_name: Zeros
+      config: {}
+    bias_regularizer: null
+    kernel_constraint: null
+    kernel_initializer:
+      class_name: RandomUniform
+      config: {maxval: 0.05, minval: -0.05, seed: null}
+    kernel_regularizer: null
+    name: dense_2
+    trainable: true
+    units: 8
+    use_bias: true
+- class_name: Dense
+  config:
+    activation: sigmoid
+    activity_regularizer: null
+    bias_constraint: null
+    bias_initializer:
+      class_name: Zeros
+      config: {}
+    bias_regularizer: null
+    kernel_constraint: null
+    kernel_initializer:
+      class_name: RandomUniform
+      config: {maxval: 0.05, minval: -0.05, seed: null}
+    kernel_regularizer: null
+    name: dense_3
+    trainable: true
+    units: 1
+    use_bias: true
+keras_version: 2.1.3
