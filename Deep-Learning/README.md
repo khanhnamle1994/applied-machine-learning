@@ -17,7 +17,7 @@ State-of-the-art results are coming from the field of deep learning and it is a 
 
 ## Convolutional Neural Networks
 * [Handwritten Digit Recognition using Convolutional Neural Networks in Python with Keras](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Deep-Learning/handwritten_digit_recognition_using_CNN_Python_Keras.ipynb)
-* [O]bject Recognition with Convolutional Neural Networks in the Keras Deep Learning Library](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Deep-Learning/object_recognition_with_CNN_in_Keras_deep_learning_library.ipynb)
+* [Object Recognition with Convolutional Neural Networks in the Keras Deep Learning Library](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Deep-Learning/object_recognition_with_CNN_in_Keras_deep_learning_library.ipynb)
 * [Predict Sentiment From Movie Reviews Using Deep Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Deep-Learning/predict_sentiment_from_movies_using_deep_learning.ipynb)
 
 ## Recurrent Neural Networks
