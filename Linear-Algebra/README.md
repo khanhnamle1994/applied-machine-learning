@@ -73,15 +73,53 @@ I would caution you to not take a straight course on linear algebra. It is a big
 
 I would recommend a staggered approach and starting with the following areas of linear algebra that are relevant to machine learning.
 
-## Vector and Matrix Notation.
+## Vector and Matrix Notation
 
-## Vector and Matrix Arithmetic.
+* [Linear Algebra Cheat Sheet for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Linear_Algebra_Cheat_Sheet.ipynb)
 
-## Multivariate Statistics.
+* [10 Examples of Linear Algebra in Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/10_Examples_of_Linear_Algebra_in_ML.ipynb)
 
-## Matrix Factorization.
+* [Basics of Mathematical Notation for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Basic_of_Mathematical_Notation_for_ML.ipynb)
 
-## Linear Least Squares.
+* [Introduction to Matrix Types in Linear Algebra for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Introduction_to_Matrix_Types_in_Linear_Algebra_for_ML.ipynb)
+
+## Vector and Matrix Arithmetic
+
+* [A Gentle Introduction to Vectors for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Gentle_Introduction_to_Vectors_for_ML.ipynb)
+
+* [Introduction to Matrices and Matrix Arithmetic for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Introduction_to_Matrices_and_Matrix_Arithmetic_for_ML.ipynb)
+
+* [How to Index, Slice and Reshape NumPy Arrays for Machine Learning in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Index_Slice_Reshape_NumPy_Arrays_for_ML_in_Python.ipynb)
+
+* [A Gentle Introduction to Broadcasting with NumPy Arrays](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Broadcasting_with_Numpy_Arrays.ipynb)
+
+* [A Gentle Introduction to N-Dimensional Arrays in Python with NumPy](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/A_Gentle_Introduction_to_N-Dimensional_Arrays_in_Python_with_NumPy.ipynb)
+
+* [A Gentle Introduction to Tensors for Machine Learning with NumPy](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/A_Gentle_Introduction_to_Tensors_for_ML_with_Numpy.ipynb)
+
+* [A Gentle Introduction to Sparse Matrices for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Sparse_Matrices_for_Machine_Learning.ipynb)
+
+## Multivariate Statistics
+
+* [A Gentle Introduction to Expected Value, Variance, and Covariance with NumPy](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/A_Gentle_Introduction_to_Expected_Value_Variance_Covariance_with_NumPy.ipynb)
+
+## Matrix Factorization
+
+* [A Gentle Introduction to Matrix Operations for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/A_Gentle_Introduction_to_Matrix_Operations_for_ML.ipynb)
+
+* [A Gentle Introduction to Matrix Factorization for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Introduction_to_Matrix_Factorization.ipynb)
+
+* [Gentle Introduction to Eigendecomposition, Eigenvalues, and Eigenvectors for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Introduction_to_Eigendecomposition_Eigenvalues_Eigenvectors.ipynb)
+
+* [A Gentle Introduction to Singular-Value Decomposition for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/A_Gentle_Introduction_to_SVD_for_ML.ipynb)
+
+* [How to Calculate the Principal Component Analysis from Scratch in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Calculate_PCA_from_Scratch_in_Python.ipynb)
+
+## Linear Least Squares
+
+* [Gentle Introduction to Vector Norms in Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Gentle_Introduction_to_Vector_Norms_in_ML.ipynb)
+
+* [How to Solve Linear Regression Using Linear Algebra](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Linear-Algebra/Solve_Linear_Regression_using_Linear_Algebra.ipynb)
 
 I would consider this the minimum linear algebra required to be an effective machine learning practitioner.
 
