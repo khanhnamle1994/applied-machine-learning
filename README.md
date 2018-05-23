@@ -7,3 +7,4 @@
 * [Long Short Term Memory](https://github.com/khanhnamle1994/applied-machine-learning/tree/master/Long-Short-Term-Memory)
 * [XGBoost](https://github.com/khanhnamle1994/applied-machine-learning/tree/master/XGBoost)
 * [Linear Algebra](https://github.com/khanhnamle1994/applied-machine-learning/tree/master/Linear-Algebra)
+* [Statistics](https://github.com/khanhnamle1994/applied-machine-learning/tree/master/Statistics)
