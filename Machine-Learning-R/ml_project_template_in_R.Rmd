@@ -1,0 +1,171 @@
+---
+title: "Machine Learning Project Template in R"
+author: "James Le"
+date: "8/15/2018"
+output: html_document
+---
+
+Applied machine learning is an empirical skill.
+
+You cannot get better at it by reading books and blog posts. You have to practice.
+
+In this post, you will discover the simple 6-step machine learning project template that you can use to jump-start your project in R.
+
+Let’s get started.
+
+# Practice Machine Learning With End-to-End Projects
+Working through machine learning problems from end-to-end is critically important.
+
+You can read about machine learning. You can also try out small one-off recipes. But applied machine learning will not come alive for you until you work through a dataset from beginning to end.
+
+Working through a project forces you to think about how the model will be used, to challenge your assumptions and to get good at all parts of a project, not just your favorite.
+
+Once you have a practice dataset and a bunch of R recipes, how do you put it all together and work through the problem end-to-end?
+
+# Use A Structured Step-By-Step Process
+Any predictive modeling machine learning project can be broken down into about 6 common tasks:
+
+1. Define Problem
+2. Summarize Data
+3. Prepare Data
+4. Evaluate Algorithms
+5. Improve Results
+6. Present Results
+
+Tasks can be combined or broken down further, but this is the general structure.
+
+To work through predictive modeling machine learning problems in R, you need to map R onto this process. They may need to be adapted or renamed slightly to suit the “R way of doing things” (e.g. the caret package).
+
+The next section provides exactly this mapping and elaborates each task and the types of sub tasks and caret packages that you can use.
+
+# Machine Learning Project Template in R
+This section presents a project template that you can use to work through machine learning problems in R end-to-end.
+
+## Template Summary
+Below is the project template that you can use in your machine learning projects in R.
+
+```{r}
+# R Project Template
+
+# 1. Prepare Problem
+# a) Load libraries
+# b) Load dataset
+# c) Split-out validation dataset
+
+# 2. Summarize Data
+# a) Descriptive statistics
+# b) Data visualizations
+
+# 3. Prepare Data
+# a) Data Cleaning
+# b) Feature Selection
+# c) Data Transforms
+
+# 4. Evaluate Algorithms
+# a) Test options and evaluation metric
+# b) Spot Check Algorithms
+# c) Compare Algorithms
+
+# 5. Improve Accuracy
+# a) Algorithm Tuning
+# b) Ensembles
+
+# 6. Finalize Model
+# a) Predictions on validation dataset
+# b) Create standalone model on entire training dataset
+# c) Save model for later use
+```
+
+## How To Use The Project Template
+1. Create a new file for your project (e.g. project_name.R).
+2. Copy the project template.
+3. Paste it into your empty project file.
+4. Start to fill it in, using recipes from blog posts on this site and others.
+
+## Machine Learning Project Template Steps
+This section gives you additional details on each of the steps of the template.
+
+### 1. Prepare Problem
+This step is about loading everything you need to start working on your problem. This includes:
+
+* R libraries you will use like caret.
+* Loading your dataset from CSV.
+* Using caret to create a separate training and validation datasets.
+
+This is also the home of any global configuration you might need to do, like setting up any parallel libraries and functions for using multiple cores.
+
+It is also the place where you might need to make reduced sample of your dataset if it is too large to work with. Ideally, your dataset should be small enough to build a model or great a visualization within a minute, ideally 30 seconds. You can always scale up well performing models later.
+
+### 2. Summarize Data
+This step is about better understanding the data that you have available.
+
+This includes understanding your data using:
+
+* Descriptive statistics such as summaries.
+* Data visualizations such as plots from the graphics and lattice packages.
+
+Take your time and use the results to prompt a lot of questions, assumptions and hypotheses that you can investigate later with specialized models.
+
+### 3. Prepare Data
+This step is about preparing the data in such a way that it best exposes the structure of the problem and the relationships between your input attributes with the output variable.
+
+This includes tasks such as:
+
+* Cleaning data by removing duplicates, marking missing values and even imputing missing values.
+* Feature selection where redundant features may be removed.
+* Data transforms where attributes are scaled or redistributed in order to best expose the structure of the problem later to learning algorithms.
+
+Start simple. Revisit this step often and cycle with the next step until you converge on a subset of algorithms and a presentation of the data that results in accurate or accurate enough models to proceed.
+
+### 4. Evaluate Algorithms
+This step is about finding a subset of machine learning algorithms that are good at exploiting the structure of your data (e.g. have better than average skill).
+
+This involves steps such as:
+
+* Defining test options using caret such as cross validation and the evaluation metric to use.
+* Spot checking a suite of linear and nonlinear machine learning algorithms.
+* Comparing the estimated accuracy of algorithms.
+
+Practically, on a given problem you will likely spend most of your time on this and the previous step until you converge on a set of 3-to-5 well performing machine learning algorithms.
+
+### 5. Improve Accuracy
+Once you have a short list of machine learning algorithms, you need to get the most out of them. There are two different ways to improve the accuracy of your models:
+
+* Search for a combination of parameters for each algorithm using caret that yields the best results.
+* Combine the prediction of multiple models into an ensemble prediction using standalone algorithms or the caretEnsemble package.
+
+The line between this and the previous step can blur when a project becomes concrete. There may be a little algorithm tuning in the previous step. And in the case of ensembles, you may bring more than a short list of algorithms forward to combine their predictions.
+
+### 6. Finalize Model
+Once you have found a model that you believe can make accurate predictions on unseen data, you are ready to finalize it.
+
+Finalizing a model may involve sub-tasks such as:
+
+* Using an optimal model tuned by caret to make predictions on unseen data.
+* Creating a standalone model using the parameters tuned by caret.
+* Saving an optimal model to file for later use.
+
+Once you make this far you are ready to present results to stakeholders and/or deploy your model to start making predictions on unseen data.
+
+## Tips For Using The Template Well
+Below are tips that you can use to make the most of the machine learning project template in R.
+
+* Fast First Pass. Make a first-pass through the project steps as fast as possible. This will give you confidence that you have all the parts that you need and a base line from which to improve.
+* Cycles. The process in not linear but cyclic. You will loop between steps, and probably spend most of your time in tight loops between steps 3-4 or 3-4-5 until you achieve a level of accuracy that is sufficient or you run out of time.
+* Attempt Every Step. It easy to skip steps, especially if you are not confident or familiar with the tasks of that step. Try and do something at each step in the process, even if it does not improve accuracy. You can always build upon it later. Don’t skip steps, just reduce their contribution.
+* Ratchet Accuracy. The goal of the project is model accuracy. Every step contributes towards this goal. Treat changes that you make and experiments that increase accuracy as the golden path in the process and reorganize other steps around them. Accuracy is a ratchet that can only move in one direction (better, not worse).
+* Adapt As Needed. Modify the steps as you need on a project, especially as you become more experienced with the template. Blur the edges of tasks, such as 4-5 to best serve model accuracy.
+
+## You Can Work Through Machine Learning Problems in R
+**You do not need to be an R programmer**. You can use the recipes on this blog and others to jump-start your machine learning project, and lean on the R help system to understand the functions and arguments used.
+
+**You do not need to be a machine learning expert**. Machine learning is an empirical skill that you can only improve at by practicing. Start practicing now on small in-memory datasets.
+
+**You do not need to be a master of machine learning algorithms**. There are far too many machine algorithms to be an expert in them all. It is much easier to focus on the goal of getting good at applying machine learning algorithms to data. Start practicing now using the template above.
+
+# Summary
+In this post you discovered a machine learning project template in R.
+
+It lays out the steps of a predictive modeling machine learning project with the goal of maximizing model accuracy.
+
+You can copy-and-paste the template and use it jump-start your current or next machine learning project in R.
