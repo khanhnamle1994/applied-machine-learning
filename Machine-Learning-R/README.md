@@ -21,3 +21,4 @@ Here’s how to get started with R machine learning:
 * [Tune Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/tune_ml_algorithms_in_R.Rmd)
 * [How to Build an Ensemble Of Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/build_an_ensemble_of_ml_algorithms_in_R.Rmd)
 * [Compare The Performance of Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/compare_performance_ml_algorithms_in_R.Rmd)
+* [Save And Finalize Your Machine Learning Model in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/save_and_finalize_ml_model_in_R.Rmd)
