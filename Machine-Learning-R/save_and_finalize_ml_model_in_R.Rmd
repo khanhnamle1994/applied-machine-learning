@@ -1,0 +1,162 @@
+---
+title: "Save And Finalize Your Machine Learning Model in R"
+author: "James Le"
+date: "8/16/2018"
+output: html_document
+---
+
+Finding an accurate machine learning is not the end of the project.
+
+In this post you will discover how to finalize your machine learning model in R including: making predictions on unseen data, re-building the model from scratch and saving your model for later use.
+
+Let’s get started.
+
+# Finalize Your Machine Learning Model
+
+Once you have an accurate model on your test harness you are nearly, done. But not yet.
+
+There are still a number of tasks to do to finalize your model. The whole idea of creating an accurate model for your dataset was to make predictions on unseen data.
+
+There are three tasks you may be concerned with:
+
+1. Making new predictions on unseen data.
+2. Creating a standalone model using all training data.
+3. Saving your model to file for later loading and making predictions on new data.
+
+Once you have finalized your model you are ready to make use of it. You could use the R model directly. You could also discover the key internal representation found by the learning algorithm (like the coefficients in a linear model) and use them in a new implementation of the prediction algorithm on another platform.
+
+In the next section, you will look at how you can finalize your machine learning model in R.
+
+# Finalize Predictive Model in R
+Caret is an excellent tool that you can use to find good or even best machine learning algorithms and parameters for machine learning algorithms.
+
+But what do you do after you have discovered a model that is accurate enough to use?
+
+Once you have found a good model in R, you have three main concerns:
+
+1. Making new predictions using your tuned caret model.
+2. Creating a standalone model using the entire training dataset.
+3. Saving/Loading a standalone model to file.
+
+This section will step you through how to achieve each of these tasks in R.
+
+## 1. Make Predictions On New Data
+You can make new predictions using a model you have tuned using caret using the *predict.train()* function.
+
+In the recipe below, the dataset is split into a validation dataset and a training dataset. The validation dataset could just as easily be a new dataset stored in a separate file and loaded as a data frame.
+
+A good model of the data is found using LDA. We can see that caret provides access to the best model from a training run in the finalModel variable.
+
+We can use that model to make predictions by calling predict using the fit from train which will automatically use the final model. We must specify the data one which to make predictions via the *newdata* argument.
+
+```{r}
+# load libraries
+library(caret)
+library(mlbench)
+# load dataset
+data(PimaIndiansDiabetes)
+# create 80%/20% for training and validation datasets
+set.seed(9)
+validation_index <- createDataPartition(PimaIndiansDiabetes$diabetes, p=0.80, list=FALSE)
+validation <- PimaIndiansDiabetes[-validation_index,]
+training <- PimaIndiansDiabetes[validation_index,]
+# train a model and summarize model
+set.seed(9)
+control <- trainControl(method="cv", number=10)
+fit.lda <- train(diabetes~., data=training, method="lda", metric="Accuracy", trControl=control)
+print(fit.lda)
+print(fit.lda$finalModel)
+# estimate skill on validation dataset
+set.seed(9)
+predictions <- predict(fit.lda, newdata=validation)
+confusionMatrix(predictions, validation$diabetes)
+
+```
+
+Running the example, we can see that the estimated accuracy on the training dataset was 76.91%. Using the finalModel in the fit, we can see that the accuracy on the hold out validation dataset was 77.78%, very similar to our estimate.
+
+## 2. Create A Standalone Model
+
+In this example, we have tuned a random forest with 3 different values for *mtry* and *ntree* set to 2000. By printing the fit and the finalModel, we can see that the most accurate value for *mtry* was 2.
+
+Now that we know a good algorithm (random forest) and the good configuration (mtry=2, ntree=2000) we can create the final model directly using all of the training data. We can lookup the “*rf*” random forest implementation used by caret in the Caret List of Models and note that it is using the *randomForest* package and in turn the *randomForest()* function.
+
+The example creates a new model directly and uses it to make predictions on the new data, this case simulated as the verification dataset.
+
+```{r}
+# load libraries
+library(caret)
+library(mlbench)
+library(randomForest)
+# load dataset
+data(Sonar)
+set.seed(7)
+# create 80%/20% for training and validation datasets
+validation_index <- createDataPartition(Sonar$Class, p=0.80, list=FALSE)
+validation <- Sonar[-validation_index,]
+training <- Sonar[validation_index,]
+# train a model and summarize model
+set.seed(7)
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+fit.rf <- train(Class~., data=training, method="rf", metric="Accuracy", trControl=control, ntree=2000)
+print(fit.rf)
+print(fit.rf$finalModel)
+# create standalone model using all training data
+set.seed(7)
+finalModel <- randomForest(Class~., training, mtry=2, ntree=2000)
+# make a predictions on "new data" using the final model
+final_predictions <- predict(finalModel, validation[,1:60])
+confusionMatrix(final_predictions, validation$Class)
+```
+
+We can see that the estimated accuracy of the optimal configuration was 85.07%. We can see that the accuracy of the final standalone model trained on all of the training dataset and predicting for the validation dataset was 82.93%.
+
+Some simpler models, like linear models can output their coefficients. This is useful, because from these, you can implement the simple prediction procedure in your language of choice and use the coefficients to get the same accuracy. This gets more difficult as the complexity of the representation increases.
+
+## 3. Save and Load Your Model
+You can save your best models to a file so that you can load them up later and make predictions.
+
+In this example we split the Sonar dataset into a training dataset and a validation dataset. We take our validation dataset as new data to test our final model. We train the final model using the training dataset and our optimal parameters, then save it to a file called final_model.rds in the local working directory.
+
+The model is serialized. It can be loaded at a later time by calling readRDS() and assigning the object that is loaded (in this case a random forest fit) to a variable name. The loaded random forest is then used to make predictions on new data, in this case the validation dataset.
+
+```{r}
+# load libraries
+library(caret)
+library(mlbench)
+library(randomForest)
+library(doMC)
+registerDoMC(cores=8)
+# load dataset
+data(Sonar)
+set.seed(7)
+# create 80%/20% for training and validation datasets
+validation_index <- createDataPartition(Sonar$Class, p=0.80, list=FALSE)
+validation <- Sonar[-validation_index,]
+training <- Sonar[validation_index,]
+# create final standalone model using all training data
+set.seed(7)
+final_model <- randomForest(Class~., training, mtry=2, ntree=2000)
+# save the model to disk
+saveRDS(final_model, "./final_model.rds")
+ 
+# later...
+ 
+# load the model
+super_model <- readRDS("./final_model.rds")
+print(super_model)
+# make a predictions on "new data" using the final model
+final_predictions <- predict(super_model, validation[,1:60])
+confusionMatrix(final_predictions, validation$Class)
+```
+
+We can see that the accuracy on the validation dataset was 82.93%.
+
+# Summary
+In this post you discovered three recipes for working with final predictive models:
+
+1. How to make predictions using the best model from caret tuning.
+2. How to create a standalone model using the parameters found during caret tuning.
+3. How to save and later load a standalone model and use it to make predictions.
+
+You can work through these recipes to understand them better. You can also use them as a template and copy-and-paste them into your current or next machine learning project.

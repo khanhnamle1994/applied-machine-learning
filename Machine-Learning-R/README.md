@@ -7,6 +7,7 @@ It’s popular because of the large number of techniques available, and because 
 Here’s how to get started with R machine learning:
 
 ## Data Preparation in R
+* [Machine Learning Project Template in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/ml_project_template_in_R.Rmd)
 * [How To Load Your Machine Learning Data Into R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/load_ml_data_into_r.Rmd)
 * [Better Understand Your Data in R Using Descriptive Statistics](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/understand_data_in_R_descriptive_statistics.Rmd)
 * [Better Understand Your Data in R Using Visualization](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/understand_data_in_R_visualization.Rmd)
@@ -15,6 +16,7 @@ Here’s how to get started with R machine learning:
 
 ## Applied Machine Learning in R
 * [How to Evaluate Machine Learning Algorithms with R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/evaluate_ml_algorithms_with_R.Rmd)
+* [Machine Learning Evaluation Metrics in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/ml_evaluation_metrics.Rmd)
 * [Spot Check Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/spot_check_ml_algorithms_in_R.Rmd)
 * [Tune Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/tune_ml_algorithms_in_R.Rmd)
 * [How to Build an Ensemble Of Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/build_an_ensemble_of_ml_algorithms_in_R.Rmd)
