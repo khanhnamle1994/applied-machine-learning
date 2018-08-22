@@ -1,0 +1,152 @@
+---
+title: "Tuning Machine Learning Models Using the Caret R Package"
+author: "James Le"
+date: "8/22/2018"
+output: html_document
+---
+
+Machine learning algorithms are parameterized so that they can be best adapted for a given problem. A difficulty is that configuring an algorithm for a given problem can be a project in and of itself.
+
+Like selecting ‘the best’ algorithm for a problem you cannot know before hand which algorithm parameters will be best for a problem. The best thing to do is to investigate empirically with controlled experiments.
+
+The caret R package was designed to make finding optimal parameters for an algorithm very easy. It provides a grid search method for searching parameters, combined with various methods for estimating the performance of a given model.
+
+In this post you will discover 5 recipes that you can use to tune machine learning algorithms to find optimal parameters for your problems using the caret R package.
+
+## Model Tuning
+
+The caret R package provides a grid search where it or you can specify the parameters to try on your problem. It will trial all combinations and locate the one combination that gives the best results.
+
+The examples in this post will demonstrate how you can use the caret R package to tune a machine learning algorithm.
+
+The Learning Vector Quantization (LVQ) will be used in all examples because of its simplicity. It is like k-nearest neighbors, except the database of samples is smaller and adapted based on training data. It has two parameters to tune, the number of instances (codebooks) in the model called the size, and the number of instances to check when making predictions called k.
+
+Each example will also use the iris flowers dataset, that comes with R. This classification dataset provides 150 observations for three species of iris flower and their petal and sepal measurements in centimeters.
+
+Each example also assumes that we are interested in the classification accuracy as the metric we are optimizing, although this can be changed. Also, each example estimates the performance of a given model (size and k parameter combination) using repeated n-fold cross validation, with 10 folds and 3 repeats. This too can be changed if you like.
+
+## Grid Search: Automatic Grid
+There are two ways to tune an algorithm in the Caret R package, the first is by allowing the system to do it automatically. This can be done by setting the tuneLength to indicate the number of different values to try for each algorithm parameter.
+
+This only supports integer and categorical algorithm parameters, and it makes a crude guess as to what values to try, but it can get you up and running very quickly.
+
+The following recipe demonstrates the automatic grid search of the size and k attributes of LVQ with 5 (tuneLength=5) values of each (25 total models).
+
+```{r}
+# ensure results are repeatable
+set.seed(7)
+# load the library
+library(caret)
+# load the dataset
+data(iris)
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+# train the model
+model <- train(Species~., data=iris, method="lvq", trControl=control, tuneLength=5)
+# summarize the model
+print(model)
+```
+
+The final values used for the model were size = 10 and k = 1.
+
+## Grid Search: Manual Grid
+The second way to search algorithm parameters is to specify a tune grid manually. In the grid, each algorithm parameter can be specified as a vector of possible values. These vectors combine to define all the possible combinations to try.
+
+The recipe below demonstrates the search of a manual tune grid with 4 values for the size parameter and 5 values for the k parameter (20 combinations).
+
+```{r}
+# ensure results are repeatable
+set.seed(7)
+# load the library
+library(caret)
+# load the dataset
+data(iris)
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+# design the parameter tuning grid
+grid <- expand.grid(size=c(5,10,20,50), k=c(1,2,3,4,5))
+# train the model
+model <- train(Species~., data=iris, method="lvq", trControl=control, tuneGrid=grid)
+# summarize the model
+print(model)
+```
+
+The final values used for the model were size = 50 and k = 5.
+
+## Data Pre-Processing
+The dataset can be preprocessed as part of the parameter tuning. It is important to do this within the sample used to evaluate each model, to ensure that the results account for all the variability in the test. If the data set say normalized or standardized before the tuning process, it would have access to additional knowledge (bias) and not give an as accurate estimate of performance on unseen data.
+
+The attributes in the iris dataset are all in the same units and generally the same scale, so normalization and standardization are not really necessary. Nevertheless, the example below demonstrates tuning the size and k parameters of LVQ while normalizing the dataset with preProcess=”scale”.
+
+```{r}
+# ensure results are repeatable
+set.seed(7)
+# load the library
+library(caret)
+# load the dataset
+data(iris)
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+# train the model
+model <- train(Species~., data=iris, method="lvq", preProcess="scale", trControl=control, tuneLength=5)
+# summarize the model
+print(model)
+```
+
+The final values used for the model were size = 8 and k = 6.
+
+## Parallel Processing
+The caret package supports parallel processing in order to decrease the compute time for a given experiment. It is supported automatically as long as it is configured. In this example we load the doMC package and set the number of cores to 4, making available 4 worker threads to caret when tuning the model. This is used for the loops for the repeats of cross validation for each parameter combination.
+
+```{r}
+# ensure results are repeatable
+set.seed(7)
+# configure multicore
+library(doMC)
+registerDoMC(cores=4)
+# load the library
+library(caret)
+# load the dataset
+data(iris)
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+# train the model
+model <- train(Species~., data=iris, method="lvq", trControl=control, tuneLength=5)
+# summarize the model
+print(model)
+```
+
+The results are the same as the first example, only completed faster.
+
+## Visualization of Performance
+It can be useful to graph the performance of different algorithm parameter combinations to look for trends and the sensitivity of the model. Caret supports graphing the model directly which will compare the accuracy of different algorithm combinations.
+
+In the recipe below, a larger manual grid of algorithm parameters are defined and the results are graphed. The graph shows the size on the x axis and model accuracy on the y axis. Two lines are drawn, one for each k value. The graph shows the general trends in the increase in performance with size and that the larger value of k is probably preferred.
+
+```{r}
+# ensure results are repeatable
+set.seed(7)
+# load the library
+library(caret)
+# load the dataset
+data(iris)
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+# design the parameter tuning grid
+grid <- expand.grid(size=c(5,10,15,20,25,30,35,40,45,50), k=c(3,5))
+# train the model
+model <- train(Species~., data=iris, method="lvq", trControl=control, tuneGrid=grid)
+# summarize the model
+print(model)
+# plot the effect of parameters on accuracy
+plot(model)
+```
+
+The final values used for the model were size = 35 and k = 5.
+
+## Summary
+In this post you have discovered the support in the caret R package for tuning algorithm parameters by using a grid search.
+
+You have seen 5 recipes using the caret R package for tuning the size and k parameters for the LVQ algorithm.
+
+Each recipe in this post is standalone and ready for you to copy-and-paste into your own project and adapt to your problem.
