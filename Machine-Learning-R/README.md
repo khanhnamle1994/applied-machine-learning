@@ -22,3 +22,6 @@ Here’s how to get started with R machine learning:
 * [How to Build an Ensemble Of Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/build_an_ensemble_of_ml_algorithms_in_R.Rmd)
 * [Compare The Performance of Machine Learning Algorithms in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/compare_performance_ml_algorithms_in_R.Rmd)
 * [Save And Finalize Your Machine Learning Model in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/save_and_finalize_ml_model_in_R.Rmd)
+* [Compare Models And Select The Best Using The Caret R Package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/compare_models_and_select_the_best_using_the_Caret_R_package.Rmd)
+* [Tuning Machine Learning Models Using the Caret R Package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/tuning_ml_models_using_the_Caret_R_package.Rmd)
+* [Data Visualization with the Caret R package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/data_visualization_with_the_Caret_R_package.Rmd)
