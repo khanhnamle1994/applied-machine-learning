@@ -12,6 +12,7 @@ You can use the same tools like pandas and scikit-learn in the development and o
 * [Feature Selection For Machine Learning in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/feature_selection_ml_python.ipynb)
 * [How to Handle Missing Data with Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_handle_missing_data_with_Python.ipynb)
 * [How to Generate Test Datasets in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_generate_test_datasets_in_Python_with_scikit_learn.ipynb)
+* [Automate Machine Learning Workflows with Pipelines in Python and scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/automate_ml_workflows_with_pipelines_in_Python_and_scikit_learn.ipynb)
 
 ## Machine Learning in Python
 * [Evaluate the Performance of Machine Learning Algorithms](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/evaluate_performance_ml_algoritms_python_resampling.ipynb)
@@ -20,3 +21,4 @@ You can use the same tools like pandas and scikit-learn in the development and o
 * [Spot-Check Regression Machine Learning Algorithms in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/spot_check_regression_ml_algorithms_in_python_scikit_learn.ipynb)
 * [How To Compare Machine Learning Algorithms in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/compare_ml_algorithms_in_python_scikit_learn.ipynb)
 * [How to Make Predictions with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_make_predictions_with_scikit_learn.ipynb)
+* [Ensemble Machine Learning Algorithms in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/ensemble_ml_algorithms_in_Python_with_scikit_learn.ipynb)
