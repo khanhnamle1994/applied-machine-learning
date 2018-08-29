@@ -1,0 +1,318 @@
+---
+title: "Convex Optimization in R"
+author: "James Le"
+date: "8/29/2018"
+output: html_document
+---
+
+Optimization is a big part of machine learning. It is the core of most popular methods, from least squares regression to artificial neural networks.
+
+In this post you will discover recipes for 5 optimization algorithms in R.
+
+These methods might be useful in the core of your own implementation of a machine learning algorithm. You may want to implement your own algorithm tuning scheme to optimize the parameters of a model for some cost function.
+
+A good example may be the case where you want to optimize the hyper-parameters of a blend of predictions from an ensemble of multiple child models.
+
+## Golden Section Search
+
+Golden Section Search is a Line Search method for Global Optimization in one-dimension. It is a Direct Search (Pattern Search) method as it samples the function to approximate a derivative rather than computing it directly.
+
+The Golden Section Search is related to pattern searches of discrete ordered lists such as the Binary Search and the Fibonacci Search. It is related to other Line Search algorithms such as Brent’s Method and more generally to other direct search optimization methods such as the Nelder-Mead Method.
+
+The information processing objective of the method is to locate the extremum of a function. It does this by directly sampling the function using a pattern of three points. The points form the brackets on the search: the first and the last points are the current bounds of the search, and the third point partitions the intervening space. The partitioning point is selected so that the ratio between the larger partition and the whole interval is the same as the ratio of the larger partition to the small partition, known as the golden ratio (phi). The partitions are compared based on their function evaluation and the better performing section is selected as the new bounds on the search. The process recurses until the desired level of precision (bracketing of the optimum) is obtained or the search stalls.
+
+The following example provides a code listing Golden Section Search method in R solving a one-dimensional nonlinear unconstrained optimization function.
+
+```{r}
+# define a 1D basin function, optima at f(0)=0
+basin <- function(x) {
+x[1]^2
+}
+ 
+# locate the minimum of the function using a Golden Section Line Search
+result <- optimize( 
+basin, # the function to be minimized
+c(-5, 5), # the bounds on the function parameter
+maximum=FALSE, # we are concerned with the function minima
+tol=1e-8) # the size of the final bracketing
+ 
+# display the results
+print(result$minimum)
+print(result$objective)
+ 
+# plot the function 
+x <- seq(-5, 5, length.out=100)
+y <- basin(expand.grid(x))
+plot(x, y, xlab="x",ylab="f(x)", type="l")
+# plot the solution as a point
+points(result$minimum, result$objective, col="red", pch=19)
+# draw a square around the optima to highlight it
+rect(result$minimum-0.3, result$objective-0.7, result$minimum+0.3, result$objective+0.7, lwd=2)
+```
+
+## Usage Heuristics
+
+* Assumes that the function is convex and unimodal specifically, that the function has a single optimum and that it lies between the bracketing points.
+* Intended to find the extrema one-dimensional continuous functions.
+* It was shown to be more efficient than an equal-sized partition line search.
+* The termination criteria is a specification on the minimum distance between the brackets on the optimum.
+* It can quickly locate the bracketed area of the optimum but is less efficient at locating the specific optimum.
+* Once a solution of desired precision is located, it can be provided as the basis to a second search algorithm that has a faster rate of convergence.
+
+## Nelder Mead
+The Nelder-Mead Method is an optimization algorithm for multidimensional nonlinear unconstrained functions.
+It is a Direct Search Method in that it does not use a function gradient during the procedure. It is a Pattern Search in that it uses a geometric pattern to explore the problem space.
+
+It is related to other Direct Search optimization methods such as Hooke and Jeeves’ Pattern Search that also uses a geometric pattern to optimize an objective function.
+
+The information processing objective of the Nelder-Mead Method is to locate the extremum of a function. This is achieved by overlaying a simplex (geometrical pattern) in the domain and iteratively increasing and/or reducing its size until an optimal value is found. The simplex is defined always with n+1 vertices, where n is the number of dimensions of the search space (i.e. a triangle for a 2D problem).
+
+The process involves identifying the worst performing point of the complex and replacing it with a point reflected through the centroid (center point) of the remaining points. The simplex can be deformed (adapt itself to the topology of the search space) by expanding away from the worst point, contract along one dimension away from the worst point, or contract on all dimensions towards the best point.
+
+The following example provides a code listing of the Nelder-Mead method in R solving a two-dimensional nonlinear optimization function.
+
+```{r}
+# definition of the 2D Rosenbrock function, optima is at (1,1)
+rosenbrock <- function(v) { 
+(1 - v[1])^2 + 100 * (v[2] - v[1]*v[1])^2
+}
+ 
+# locate the minimum of the function using the Nelder-Mead method
+result <- optim(
+c(runif(1,-3,3), runif(1,-3,3)), # start at a random position
+rosenbrock, # the function to minimize
+NULL, # no function gradient 
+method="Nelder-Mead", # use the Nelder-Mead method
+control=c( # configure Nelder-Mead
+maxit=100, # maximum iterations of 100
+reltol=1e-8, # response tolerance over-one step
+alpha=1.0, # reflection factor
+beta=0.5, # contraction factor
+gamma=2.0)) # expansion factor
+ 
+# summarize results
+# the coordinate of the minimum
+print(result$par) 
+# the function response of the minimum
+print(result$value) 
+# the number of function calls performed
+print(result$counts)
+ 
+# display the function as a contour plot
+x <- seq(-3, 3, length.out=100)
+y <- seq(-3, 3, length.out=100)
+z <- rosenbrock(expand.grid(x, y))
+contour(x, y, matrix(log10(z), length(x)), xlab="x",ylab="y")
+# draw the optima as a point
+points(result$par[1], result$par[2], col="red", pch=19)
+# draw a square around the optima to highlight it
+rect(result$par[1]-0.2, result$par[2]-0.2, result$par[1]+0.2, result$par[2]+0.2, lwd=2)
+```
+
+## Usage Heuristics
+
+* It can be used with multi-dimensional functions (one or more parameters) and with non-linear response surfaces.
+* It does not use a function derivative meaning that it can be used on non-differentiable functions, discontinuous functions, non-smooth functions, and noisy functions.
+* As a direct search method it is consider inefficient and slow relative to modern derivative-based methods.
+* It is dependent on the starting position and can be caught by local optimum in multimodal functions.
+* The stopping criteria can be a minimum change in the best position.
+* The nature of the simplex structure can mean it can get stuck in non-optimal areas of the search space, this is more likely if the size of the initial simplex is too large.
+* When the method does work (is appropriate for the function being optimized) it has been shown to be fast and robust.
+
+## Gradient Descent
+
+Gradient Descent is a first-order derivative optimization method for unconstrained nonlinear function optimization. It is called Gradient Descent because it was envisioned for function minimization. When applied to function maximization it may be referred to as Gradient Ascent.
+
+Steepest Descent Search is an extension that performs a Line Search on the line of the gradient to the locate the optimum neighboring point (optimum step or steepest step). Batch Gradient Descent is an extension where the cost function and its derivative are computed as the summed error on a collection of training examples. Stochastic Gradient Descent (or Online Gradient Descent) is like Batch Gradient Descent except that the cost function and derivative are computed for each training example.
+
+The information processing objective of the method is to locate the extremum of a function. This is achieved by first selecting a starting point in the search space. For a given point in the search space, the derivative of the cost function is calculated and a new point is selected down the gradient of the functions derivative at a distance of alpha (the step size parameter) from the current point.
+
+The example provides a code listing Gradient Descent algorithm in R solving a two-dimensional nonlinear optimization function.
+
+```{r}
+# define a 2D basin function, optima is at (0,0)
+basin <- function(x) {
+x[1]^2 + x[2]^2
+}
+ 
+# define the derivative for a 2D basin function
+derivative <- function(x) {
+c(2*x[1], 2*x[2])
+}
+ 
+# definition of the gradient descent method in 2D
+gradient_descent <- function(func, derv, start, step=0.05, tol=1e-8) {
+pt1 <- start
+grdnt <- derv(pt1)
+pt2 <- c(pt1[1] - step*grdnt[1], pt1[2] - step*grdnt[2])
+while (abs(func(pt1)-func(pt2)) > tol) {
+pt1 <- pt2
+grdnt <- derv(pt1)
+pt2 <- c(pt1[1] - step*grdnt[1], pt1[2] - step*grdnt[2])
+print(func(pt2)) # print progress
+}
+pt2 # return the last point
+}
+ 
+# locate the minimum of the function using the Gradient Descent method
+result <- gradient_descent(
+basin, # the function to optimize
+derivative, # the gradient of the function
+c(runif(1,-3,3), runif(1,-3,3)), # start point of the search 
+0.05, # step size (alpha)
+1e-8) # relative tolerance for one step
+ 
+# display a summary of the results
+print(result) # coordinate of fucntion minimum
+print(basin(result)) # response of fucntion minimum
+ 
+# display the function as a contour plot
+x <- seq(-3, 3, length.out=100)
+y <- seq(-3, 3, length.out=100)
+z <- basin(expand.grid(x, y))
+contour(x, y, matrix(z, length(x)), xlab="x",ylab="y")
+# draw the optima as a point
+points(result[1], result[2], col="red", pch=19)
+# draw a square around the optima to highlight it
+rect(result[1]-0.2, result[2]-0.2, result[1]+0.2, result[2]+0.2, lwd=2)
+```
+
+## Usage Heuristics
+
+* The method is limited to finding the local optimum, which if the function is convex, is also the global optimum.
+* It is considered inefficient and slow (linear) to converge relative to modern methods. Convergence can be slow if the gradient at the optimum flattens out (gradient goes to 0 slowly). Convergence can also be slow if the Hessian is poorly conditioned (gradient changes rapidly in some directions and slower in others).
+* The step size (alpha) may be constant, may adapt with the search, and may be maintained holistically or for each dimension.
+* The method is sensitive to initial conditions, and as such, it can be common to repeat the search process a number of times with randomly selected initial positions.
+* If the step size parameter (alpha) is too small, the search will generally take a large number of iterations to converge, if the parameter is too large can overshoot the function’s optimum.
+* Compared to non-iterative function optimization methods, gradient descent has some relative efficiencies when it comes to scaling with the number of features (dimensions).
+
+## Conjugate Gradient
+
+Conjugate Gradient Method is a first-order derivative optimization method for multidimensional nonlinear unconstrained functions. It is related to other first-order derivative optimization algorithms such as Gradient Descent and Steepest Descent.
+
+The information processing objective of the technique is to locate the extremum of a function. From a starting position, the method first computes the gradient to locate the direction of steepest descent, then performs a line search to locate the optimum step size (alpha). The method then repeats the process of computing the steepest direction, computes direction of the search, and performing a line search to locate the optimum step size. A parameter beta defines the direction update rule based on the gradient and can be computed using one of a number of methods.
+
+The difference between Conjugate Gradient and Steepest Descent is that it uses conjugate directions rather than local gradients to move downhill towards the function minimum, which can be very efficient.
+
+The example provides a code listing of the Conjugate Gradient method in R solving a two-dimensional nonlinear optimization function.
+
+```{r}
+# definition of the 2D Rosenbrock function, optima is at (1,1)
+rosenbrock <- function(v) { 
+(1 - v[1])^2 + 100 * (v[2] - v[1]*v[1])^2
+}
+ 
+# definition of the gradient of the 2D Rosenbrock function
+derivative <- function(v) {
+c(-400 * v[1] * (v[2] - v[1]*v[1]) - 2 * (1 - v[1]), 
+200 * (v[2] - v[1]*v[1]))
+}
+ 
+# locate the minimum of the function using the Conjugate Gradient method
+result <- optim(
+c(runif(1,-3,3), runif(1,-3,3)), # start at a random position
+rosenbrock, # the function to minimize
+derivative, # no function gradient 
+method="CG", # use the Conjugate Gradient method
+control=c( # configure Conjugate Gradient
+maxit=100, # maximum iterations of 100
+reltol=1e-8, # response tolerance over-one step
+type=2)) # use the Polak-Ribiere update method
+ 
+# summarize results
+print(result$par) # the coordinate of the minimum
+print(result$value) # the function response of the minimum
+print(result$counts) # the number of function calls performed
+ 
+# display the function as a contour plot
+x <- seq(-3, 3, length.out=100)
+y <- seq(-3, 3, length.out=100)
+z <- rosenbrock(expand.grid(x, y))
+contour(x, y, matrix(log10(z), length(x)), xlab="x", ylab="y")
+# draw the optima as a point
+points(result$par[1], result$par[2], col="red", pch=19)
+# draw a square around the optima to highlight it
+rect(result$par[1]-0.2, result$par[2]-0.2, result$par[1]+0.2, result$par[2]+0.2, lwd=2)
+```
+
+## Usage Heuristics
+
+* It is more efficient than Steepest Descent, for example it may take a straight line path down narrow valley’s, whereas Steepest Descent would have to zig-zag (pinball) down the valley.
+* Devolves into Steepest Descent if the conjugate direction is reset each iteration.
+* It is almost as fast as second-order gradient methods, requiring just n iterations to locate an optimum for suitable functions (where n is the number of parameters).
+* It does not maintain a Hessian matrix (like BFGS) and therefore may be suitable for larger problems with many variables.
+* The method is most efficient (works the best) with quadratic or quadratic-like functions, or where the function is approximately quadratic near the optimum.
+* The method is sensitive to its starting position on non-convex problems.
+* The learning rate (step size alpha) does not have to be specified as a line search is used to locate the optimum value as needed.
+* Common methods for computing the direction update rule (beta) are the Hestenes-Stiefel, Fletcher-Reeves, Polak-Ribiere, and Beale-Sorenson methods. The Polak-Ribiere method generally works better in practice for non-quadratic functions.
+* It is dependent on the accuracy of the line search, errors introduced both from this and the less-than quadratic nature of the response surface will result in more frequent updates to the direction and a less efficient search.
+* To avoid the search degenerating, consider restarting the search process after n iterations, where n is the number of function parameters.
+
+## BFGS
+
+BFGS is an optimization method for multidimensional nonlinear unconstrained functions.
+
+BFGS belongs to the family of quasi-Newton (Variable Metric) optimization methods that make use of both first-derivative (gradient) and second-derivative (Hessian matrix) based information of the function being optimized. More specifically, it is a quasi-Newton method which means that it approximates the second-order derivative rather than compute it directly. It is related to other quasi-Newton methods such as the DFP Method, Broyden’s method and the SR1 Method.
+
+Two popular extension of BFGS is L-BFGS (Limited Memory BFGS) which has lower memory resource requirements and L-BFGS-B (Limited Memory Boxed BFGS) which extends L-BFGS and imposes box constraints on the method.
+
+The information processing objective of the BFGS Method is to locate the extremum of a function.
+
+This is achieved by iteratively building up a good approximation of the inverse Hessian matrix. Given an initial starting position, it prepares an approximation of the Hessian matrix (square matrix of second-order partial derivatives). It then repeats the process of computing the search direction using the approximated Hessian, computes an optimum step size using a Line Search then, updates the position, and updates the approximation of the Hessian. The method for updating the Hessian each iteration is called the BFGS rule which insures the updated matrix is positive definite.
+
+The example provides a code listing of the BFGS method in R solving a two-dimensional nonlinear optimization function.
+
+```{r}
+# definition of the 2D Rosenbrock function, optima is at (1,1)
+rosenbrock <- function(v) { 
+(1 - v[1])^2 + 100 * (v[2] - v[1]*v[1])^2
+}
+ 
+# definition of the gradient of the 2D Rosenbrock function
+derivative <- function(v) {
+c(-400 * v[1] * (v[2] - v[1]*v[1]) - 2 * (1 - v[1]), 200 * (v[2] - v[1]*v[1]))
+}
+ 
+# locate the minimum of the function using the BFGS method
+result <- optim(
+c(runif(1,-3,3), runif(1,-3,3)), # start at a random position
+rosenbrock, # the function to minimize
+derivative, # no function gradient 
+method="BFGS", # use the BFGS method
+control=c( # configure BFGS
+maxit=100, # maximum iterations of 100
+reltol=1e-8)) # response tolerance over-one step
+ 
+# summarize results
+print(result$par) # the coordinate of the minimum
+print(result$value) # the function response of the minimum
+print(result$counts) # the number of function calls performed
+ 
+# display the function as a contour plot
+x <- seq(-3, 3, length.out=100)
+y <- seq(-3, 3, length.out=100)
+z <- rosenbrock(expand.grid(x, y))
+contour(x, y, matrix(log10(z), length(x)), xlab="x", ylab="y")
+# draw the optima as a point
+points(result$par[1], result$par[2], col="red", pch=19)
+# draw a square around the optima to highlight it
+rect(result$par[1]-0.2, result$par[2]-0.2, result$par[1]+0.2, result$par[2]+0.2, lwd=2)
+```
+
+## Usage Heuristics
+
+* It requires a function where the the functions gradient (first partial derivative) can be computed at arbitrary points.
+* It does not require second-order derivatives as it approximates the Hessian matrix, making it less computationally expensive compared to Newton’s method.
+* It requires a relatively large memory footprint, as it maintains an n*n Hessian matrix, where n is the number of variables. This is a limitation on the methods scalability.
+* The rate of convergence is super-linear and the computational cost of each iteration is O(n^2).
+* The L-BFGS extension to BFGS is intended for functions with very large numbers of parameters (>1000).
+* The stopping condition is typically a minimum change is response or a minimum gradient.
+* BFGS is somewhat robust and self correcting in terms of the search direction and as such it does not require the use of exact line searches when determining the step size.
+
+## Summary
+
+Optimization is an important concept to understand and apply carefully in applied machine learning.
+
+In this post you discovered 5 convex optimization algorithms with recipes in R that are ready to copy and paste into your own problem.
+
+You also learned some background for each method and general heuristics for operating each algorithm.
