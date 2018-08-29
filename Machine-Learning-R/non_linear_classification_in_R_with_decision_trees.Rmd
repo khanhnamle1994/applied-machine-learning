@@ -1,0 +1,95 @@
+---
+title: "Non-Linear Classification in R with Decision Trees"
+author: "James Le"
+date: "8/29/2018"
+output: html_document
+---
+
+In this post you will discover 4 recipes for non-linear classification with decision trees in R.
+
+All recipes in this post use the iris flowers dataset provided with R in the datasets package. The dataset describes the measurements if iris flowers and requires classification of each observation to one of three flower species.
+
+## Classification and Regression Trees
+Classification and Regression Trees (CART) split attributes based on values that minimize a loss function, such as sum of squared errors.
+
+The following recipe demonstrates the recursive partitioning decision tree method on the iris dataset.
+
+```{r}
+# load the package
+library(rpart)
+# load data
+data(iris)
+# fit model
+fit <- rpart(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4], type="class")
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Bagging CART
+Bootstrapped Aggregation (Bagging) is an ensemble method that creates multiple models of the same type from different sub-samples of the same dataset. The predictions from each separate model are combined together to provide a superior result. This approach has shown participially effective for high-variance methods such as decision trees.
+
+The following recipe demonstrates bagging applied to the recursive partitioning decision tree for the iris dataset.
+
+```{r}
+# load the package
+library(ipred)
+# load data
+data(iris)
+# fit model
+fit <- bagging(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4], type="class")
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Random Forest
+Random Forest is variation on Bagging of decision trees by reducing the attributes available to making a tree at each decision point to a random sub-sample. This further increases the variance of the trees and more trees are required.
+
+The following recipe demonstrate the random forest method applied to the iris dataset.
+
+```{r}
+# load the package
+library(randomForest)
+# load data
+data(iris)
+# fit model
+fit <- randomForest(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Boosted C5.0
+The C5.0 method is a further extension of C4.5 and pinnacle of that line of methods. It was proprietary for a long time, although the code was released recently and is available in the C50 package.
+
+The following recipe demonstrates the C5.0 with boosting method applied to the iris dataset.
+
+```{r}
+# load the package
+library(C50)
+# load data
+data(iris)
+# fit model
+fit <- C5.0(Species~., data=iris, trials=10)
+# summarize the fit
+print(fit)
+# make predictions
+predictions <- predict(fit, iris)
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Summary
+In this post you discovered 4 recipes for non-linear classification using decision trees in R using the iris flowers dataset.
+
+Each recipe is generic and ready for you to copy and paste and modify for your own problem.
