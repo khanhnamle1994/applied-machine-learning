@@ -25,3 +25,6 @@ Here’s how to get started with R machine learning:
 * [Compare Models And Select The Best Using The Caret R Package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/compare_models_and_select_the_best_using_the_Caret_R_package.Rmd)
 * [Tuning Machine Learning Models Using the Caret R Package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/tuning_ml_models_using_the_Caret_R_package.Rmd)
 * [Data Visualization with the Caret R package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/data_visualization_with_the_Caret_R_package.Rmd)
+* [How To Estimate Model Accuracy in R Using The Caret Package](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/how_to_estimate_model_accuracy_in_R_using_Caret_package.Rmd)
+* [Non-Linear Classification in R with Decision Trees](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/non_linear_classification_in_R_with_decision_trees.Rmd)
+* [Convex Optimization in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/convex_optimization_in_R.Rmd)
