@@ -13,6 +13,7 @@ You can use the same tools like pandas and scikit-learn in the development and o
 * [How to Handle Missing Data with Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_handle_missing_data_with_Python.ipynb)
 * [How to Generate Test Datasets in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_generate_test_datasets_in_Python_with_scikit_learn.ipynb)
 * [Automate Machine Learning Workflows with Pipelines in Python and scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/automate_ml_workflows_with_pipelines_in_Python_and_scikit_learn.ipynb)
+* [Rescaling Data for Machine Learning in Python with Scikit-Learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/rescaling_data_for_ML_in_Python_with_scikit_learn.ipynb)
 
 ## Machine Learning in Python
 * [Evaluate the Performance of Machine Learning Algorithms](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/evaluate_performance_ml_algoritms_python_resampling.ipynb)
@@ -22,3 +23,4 @@ You can use the same tools like pandas and scikit-learn in the development and o
 * [How To Compare Machine Learning Algorithms in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/compare_ml_algorithms_in_python_scikit_learn.ipynb)
 * [How to Make Predictions with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_make_predictions_with_scikit_learn.ipynb)
 * [Ensemble Machine Learning Algorithms in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/ensemble_ml_algorithms_in_Python_with_scikit_learn.ipynb)
+* [How to Tune Algorithm Parameters with Scikit-Learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_tune_algorithm_parameters_with_scikit_learn.ipynb)
