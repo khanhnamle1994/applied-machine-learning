@@ -6,6 +6,7 @@
 * [Calculating Normal Summary Statistics](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/A_Gentle_Intro_to_Calculating_Normal_Summary_Stats.ipynb)
 * [Chi-Squared Test for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/A_Gentle_Intro_to_Chi_Squared_Test_for_ML.ipynb)
 * [Central Limit Theorem for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/A_Gentle_Intro_to_the_Central_Limit_Theorem_for_ML.ipynb)
+* [Code The Student's T-Test From Scratch](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/how_to_code_t_test_from_scratch.ipynb)
 * [Confidence Intervals for Machine Learning](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/Confidence_Intervals_for_ML.ipynb)
 * [Critical Values for Statistical Hypothesis Testing in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/Critical_Values_for_Statistical_Hypothesis_Testing_in_Python.ipynb)
 * [Data Visualization Methods in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Statistics/A_Gentle_Intro_to_Data_Visualization_Methods_in_Python.ipynb)
