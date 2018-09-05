@@ -1,0 +1,57 @@
+---
+title: "linear_classification_in_R"
+author: "James Le"
+date: "9/5/2018"
+output: html_document
+---
+
+In this post you will discover recipes for 2 linear classification algorithms in R.
+
+All recipes in this post use the iris flowers dataset provided with R in the datasets package. The dataset describes the measurements if iris flowers and requires classification of each observation to one of three flower species.
+
+## Logistic Regression
+Logistic Regression is a classification method that models the probability of an observation belonging to one of two classes. As such, normally logistic regression is demonstrated with binary classification problem (2 classes). Logistic Regression can also be used on problems with more than two classes (multinomial), as in this case.
+
+This recipe demonstrates multinomial logistic regression method on the iris dataset.
+
+```{r}
+# load the package
+library(VGAM)
+# load data
+data(iris)
+# fit model
+fit <- vglm(Species~., family=multinomial, data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+probabilities <- predict(fit, iris[,1:4], type="response")
+predictions <- apply(probabilities, 1, which.max)
+predictions[which(predictions=="1")] <- levels(iris$Species)[1]
+predictions[which(predictions=="2")] <- levels(iris$Species)[2]
+predictions[which(predictions=="3")] <- levels(iris$Species)[3]
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Linear Discriminant Analysis
+LDA is a classification method that finds a linear combination of data attributes that best separate the data into classes.
+
+This recipes demonstrates the LDA method on the iris dataset.
+
+```{r}
+# load the package
+library(MASS)
+data(iris)
+# fit model
+fit <- lda(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])$class
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Summary
+In this post, you discovered 2 recipes for linear classification that you can copy and paste into your own problem.
+
