@@ -1,0 +1,161 @@
+---
+title: "nonlinear_classification_in_R"
+author: "James Le"
+date: "9/5/2018"
+output: html_document
+---
+
+In this post you will discover 8 recipes for non-linear classification in R. Each recipe is ready for you to copy and paste and modify for your own problem.
+
+All recipes in this post use the iris flowers dataset provided with R in the datasets package. The dataset describes the measurements if iris flowers and requires classification of each observation to one of three flower species.
+
+## Mixture Discriminant Analysis
+This recipe demonstrates the MDA method on the iris dataset.
+
+```{r}
+# load the package
+library(mda)
+data(iris)
+# fit model
+fit <- mda(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Quadratic Discriminant Analysis
+QDA seeks a quadratic relationship between attributes that maximizes the distance between the classes.
+
+This recipe demonstrates the QDA method on the iris dataset.
+
+```{r}
+# load the package
+library(MASS)
+data(iris)
+# fit model
+fit <- qda(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])$class
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Regularized Discriminant Analysis
+This recipe demonstrates the RDA method on the iris dataset.
+
+```{r}
+# load the package
+library(klaR)
+data(iris)
+# fit model
+fit <- rda(Species~., data=iris, gamma=0.05, lambda=0.01)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])$class
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Neural Network
+A Neural Network (NN) is a graph of computational units that receive inputs and transfer the result into an output that is passed on. The units are ordered into layers to connect the features of an input vector to the features of an output vector. With training, such as the Back-Propagation algorithm, neural networks can be designed and trained to model the underlying relationship in data.
+
+This recipe demonstrates a Neural Network on the iris dataset.
+
+```{r}
+# load the package
+library(nnet)
+data(iris)
+# fit model
+fit <- nnet(Species~., data=iris, size=4, decay=0.0001, maxit=500)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4], type="class")
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Flexible Discriminant Analysis
+This recipe demonstrates the FDA method on the iris dataset.
+
+```{r}
+# load the package
+library(mda)
+data(iris)
+# fit model
+fit <- fda(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Support Vector Machine
+Support Vector Machines (SVM) are a method that uses points in a transformed problem space that best separate classes into two groups. Classification for multiple classes is supported by a one-vs-all method. SVM also supports regression by modeling the function with a minimum amount of allowable error.
+
+This recipe demonstrates the SVM method on the iris dataset.
+
+```{r}
+# load the package
+library(kernlab)
+data(iris)
+# fit model
+fit <- ksvm(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4], type="response")
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## k-Nearest Neighbors
+The k-Nearest Neighbor (kNN) method makes predictions by locating similar cases to a given data instance (using a similarity function) and returning the average or majority of the most similar data instances.
+
+This recipe demonstrate the kNN method on the iris dataset.
+
+```{r}
+# load the package
+library(caret)
+data(iris)
+# fit model
+fit <- knn3(Species~., data=iris, k=5)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4], type="class")
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Naive Bayes
+Naive Bayes uses Bayes Theorem to model the conditional relationship of each attribute to the class variable.
+
+This recipe demonstrates Naive Bayes on the iris dataset.
+
+```{r}
+# load the package
+library(e1071)
+data(iris)
+# fit model
+fit <- naiveBayes(Species~., data=iris)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, iris[,1:4])
+# summarize accuracy
+table(predictions, iris$Species)
+```
+
+## Summary
+In this post you discovered 8 recipes for non-linear classificaiton in R using the iris flowers dataset.
+
+Each recipe is generic and ready for you to copy and paste and modify for your own problem.
