@@ -6,6 +6,8 @@ You can use the same tools like pandas and scikit-learn in the development and o
 
 ## Prepare Data in Python
 * [How To Load Machine Learning Data in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/load_ml_data_python.ipynb)
+* [How to Load Data in Python with Scikit-Learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/load_data_in_Python_with_scikit_learn.ipynb)
+* [Quick and Dirty Data Analysis with Pandas](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/quick_and_dirty_data_analysis_with_Pandas.ipynb)
 * [Understand Your Machine Learning Data With Descriptive Statistics in Python](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/understand_ml_data_descriptive_statistics_python.ipynb)
 * [Visualize Machine Learning Data in Python With Pandas](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/visual_ml_data_in_python_with_pandas.ipynb)
 * [How To Prepare Your Data For Machine Learning in Python with Scikit-Learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/prepare_data_for_ml_in_python_scikit_learn.ipynb)
