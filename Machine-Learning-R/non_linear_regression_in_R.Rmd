@@ -1,0 +1,74 @@
+---
+title: "Non-Linear Regression in R"
+author: "James Le"
+date: "9/12/2018"
+output: html_document
+---
+
+In this post you will discover 3 recipes for non-linear regression in R.
+
+There are many advanced methods you can use for non-linear regression, and these recipes are but a sample of the methods you could use.
+
+Each example in this post uses the longley dataset provided in the datasets package that comes with R. The longley dataset describes 7 economic variables observed from 1947 to 1962 used to predict the number of people employed yearly.
+
+## Support Vector Machine
+Support Vector Machines (SVM) are a class of methods, developed originally for classification, that find support points that best separate classes. SVM for regression is called Support Vector Regression (SVM).
+
+```{r}
+# load the package
+library(kernlab)
+# load data
+data(longley)
+# fit model
+fit <- ksvm(Employed~., longley)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley)
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## k-Nearest Neighbor
+The k-Nearest Neighbor (kNN) does not create a model, instead it creates predictions from close data on-demand when a prediction is required. A similarity measure (such as Euclidean distance) is used to locate close data in order to make predictions.
+
+```{r}
+# load the package
+library(caret)
+# load data
+data(longley)
+# fit model
+fit <- knnreg(longley[,1:6], longley[,7], k=3)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley[,1:6])
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Neural Network
+A Neural Network (NN) is a graph of computational units that recieve inputs and transfer the result into an output that is passed on. The units are ordered into layers to connect the features of an input vector to the features of an output vector. With training, such as the Back-Propagation algorithm, neural networks can be designed and trained to model the underlying relationship in data.
+
+```{r}
+# load the package
+library(nnet)
+# load data
+data(longley)
+x <- longley[,1:6]
+y <- longley[,7]
+# fit model
+fit <- nnet(Employed~., longley, size=12, maxit=500, linout=T, decay=0.01)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, x, type="raw")
+# summarize accuracy
+mse <- mean((y - predictions)^2)
+print(mse)
+```
+
+## Summary
+In this post you discovered 3 non-linear regression methods with recipes that you can copy-and-paste for your own problems.
