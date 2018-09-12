@@ -1,0 +1,95 @@
+---
+title: "Non-Linear Regression in R with Decision Trees"
+author: "James Le"
+date: "9/12/2018"
+output: html_document
+---
+
+In this post, you will discover 4 recipes for non-linear regression with decision trees in R.
+
+Each example in this post uses the longley dataset provided in the datasets package that comes with R.
+
+The longley dataset describes 7 economic variables observed from 1947 to 1962 used to predict the number of people employed yearly.
+
+## Classification and Regression Trees
+Classification and Regression Trees (CART) split attributes based on values that minimize a loss function, such as sum of squared errors.
+
+The following recipe demonstrates the recursive partitioning decision tree method on the longley dataset.
+
+```{r}
+# load the package
+library(rpart)
+# load data
+data(longley)
+# fit model
+fit <- rpart(Employed~., data=longley, control=rpart.control(minsplit=5))
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley[,1:6])
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Bagging CART
+Bootstrapped Aggregation (Bagging) is an ensemble method that creates multiple models of the same type from different sub-samples of the same dataset. The predictions from each separate model are combined together to provide a superior result. This approach has shown participially effective for high-variance methods such as decision trees.
+
+The following recipe demonstrates bagging applied to the recursive partitioning decision tree.
+
+```{r}
+# load the package
+library(ipred)
+# load data
+data(longley)
+# fit model
+fit <- bagging(Employed~., data=longley, control=rpart.control(minsplit=5))
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley[,1:6])
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Random Forest
+Random Forest is variation on Bagging of decision trees by reducing the attributes available to making a tree at each decision point to a random sub-sample. This further increases the variance of the trees and more trees are required.
+
+```{r}
+# load the package
+library(randomForest)
+# load data
+data(longley)
+# fit model
+fit <- randomForest(Employed~., data=longley)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley[,1:6])
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Cubist
+Cubist decision trees are another ensemble method. They are constructed like model trees but involve a boosting-like procedure called committees that re rule-like models.
+
+```{r}
+# load the package
+library(Cubist)
+# load data
+data(longley)
+# fit model
+fit <- cubist(longley[,1:6], longley[,7])
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley[,1:6])
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Summary
+In this post you discovered 4 recipes for decision trees for non-linear regression in R. Each recipe is ready for you to copy-and-paste into your own workspace and modify for your needs.
