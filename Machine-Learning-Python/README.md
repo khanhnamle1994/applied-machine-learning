@@ -26,3 +26,4 @@ You can use the same tools like pandas and scikit-learn in the development and o
 * [How to Make Predictions with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_make_predictions_with_scikit_learn.ipynb)
 * [Ensemble Machine Learning Algorithms in Python with scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/ensemble_ml_algorithms_in_Python_with_scikit_learn.ipynb)
 * [How to Tune Algorithm Parameters with Scikit-Learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/how_to_tune_algorithm_parameters_with_scikit_learn.ipynb)
+* [Machine Learning Algorithm Recipes in scikit-learn](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-Python/prepare_data_for_machine_learning_in_Python_with_Pandas.ipynb)
