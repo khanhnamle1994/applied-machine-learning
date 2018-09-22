@@ -32,3 +32,5 @@ Here’s how to get started with R machine learning:
 * [Nonlinear Classification in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/non_linear_classification_in_R.Rmd)
 * [Non-Linear Regression in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/non_linear_regression_in_R.Rmd)
 * [Non-Linear Regression in R with Decision Trees](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/non_linear_regression_in_R_with_decision_trees.Rmd)
+* [Penalized Regression in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/penalized_regression_in_R.Rmd)
+* [Linear Regression in R](https://github.com/khanhnamle1994/applied-machine-learning/blob/master/Machine-Learning-R/linear_regression_in_R.Rmd)
