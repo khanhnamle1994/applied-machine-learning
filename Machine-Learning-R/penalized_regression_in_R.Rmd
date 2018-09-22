@@ -1,0 +1,80 @@
+---
+title: "Penalized Regression in R"
+author: "James Le"
+date: "9/21/2018"
+output: html_document
+---
+
+In this post you will discover 3 recipes for penalized regression for the R platform.
+
+You can copy and paste the recipes in this post to make a jump-start on your own problem or to learn and practice with linear regression in R.
+
+Each example in this post uses the longley dataset provided in the datasets package that comes with R. The longley dataset describes 7 economic variables observed from 1947 to 1962 used to predict the number of people employed yearly.
+
+## Ridge Regression
+Ridge Regression creates a linear regression model that is penalized with the L2-norm which is the sum of the squared coefficients. This has the effect of shrinking the coefficient values (and the complexity of the model) allowing some coefficients with minor contribution to the response to get close to zero.
+
+```{r}
+# load the package
+library(glmnet)
+# load data
+data(longley)
+x <- as.matrix(longley[,1:6])
+y <- as.matrix(longley[,7])
+# fit model
+fit <- glmnet(x, y, family="gaussian", alpha=0, lambda=0.001)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, x, type="link")
+# summarize accuracy
+mse <- mean((y - predictions)^2)
+print(mse)
+```
+
+## Least Absolute Shrinkage and Selection Operator
+Least Absolute Shrinkage and Selection Operator (LASSO) creates a regression model that is penalized with the L1-norm which is the sum of the absolute coefficients. This has the effect of shrinking coefficient values (and the complexity of the model), allowing some with a minor effect to the response to become zero.
+
+```{r}
+# load the package
+library(lars)
+# load data
+data(longley)
+x <- as.matrix(longley[,1:6])
+y <- as.matrix(longley[,7])
+# fit model
+fit <- lars(x, y, type="lasso")
+# summarize the fit
+summary(fit)
+# select a step with a minimum error
+best_step <- fit$df[which.min(fit$RSS)]
+# make predictions
+predictions <- predict(fit, x, s=best_step, type="fit")$fit
+# summarize accuracy
+mse <- mean((y - predictions)^2)
+print(mse)
+```
+
+## Elastic Net
+Elastic Net creates a regression model that is penalized with both the L1-norm and L2-norm. This has the effect of effectively shrinking coefficients (as in ridge regression) and setting some coefficients to zero (as in LASSO).
+
+```{r}
+# load the package
+library(glmnet)
+# load data
+data(longley)
+x <- as.matrix(longley[,1:6])
+y <- as.matrix(longley[,7])
+# fit model
+fit <- glmnet(x, y, family="gaussian", alpha=0.5, lambda=0.001)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, x, type="link")
+# summarize accuracy
+mse <- mean((y - predictions)^2)
+print(mse)
+```
+
+## Summary
+In this post you discovered 3 recipes for penalized regression in R. Penalization is a powerful method for attribute selection and improving the accuracy of predictive models.
