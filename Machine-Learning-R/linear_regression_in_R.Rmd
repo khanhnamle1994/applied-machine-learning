@@ -1,0 +1,91 @@
+---
+title: "Linear Regression in R"
+author: "James Le"
+date: "9/21/2018"
+output: html_document
+---
+
+In this post you will discover 4 recipes for linear regression for the R platform.
+
+You can copy and paste the recipes in this post to make a jump-start on your own problem or to learn and practice with linear regression in R.
+
+Each example in this post uses the longley dataset provided in the datasets package that comes with R. The longley dataset describes 7 economic variables observed from 1947 to 1962 used to predict the number of people employed yearly.
+
+## Ordinary Least Squares Regression
+Ordinary Least Squares (OLS) regression is a linear model that seeks to find a set of coefficients for a line/hyper-plane that minimise the sum of the squared errors.
+
+```{r}
+# load data
+data(longley)
+# fit model
+fit <- lm(Employed~., longley)
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley)
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Stepwize Linear Regression
+Stepwise Linear Regression is a method that makes use of linear regression to discover which subset of attributes in the dataset result in the best performing model. It is step-wise because each iteration of the method makes a change to the set of attributes and creates a model to evaluate the performance of the set.
+
+```{r}
+# load data
+data(longley)
+# fit model
+base <- lm(Employed~., longley)
+# summarize the fit
+summary(base)
+# perform step-wise feature selection
+fit <- step(base)
+# summarize the selected model
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley)
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Principal Component Regression
+Principal Component Regression (PCR) creates a linear regression model using the outputs of a Principal Component Analysis (PCA) to estimate the coefficients of the model. PCR is useful when the data has highly correlated predictors.
+
+```{r}
+# load the package
+library(pls)
+# load data
+data(longley)
+# fit model
+fit <- pcr(Employed~., data=longley, validation="CV")
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley, ncomp=6)
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Partial Least Squares Regression
+Partial Least Squares (PLS) Regression creates a linear model of the data in a transformed projection of problem space. Like PCR, PLS is appropriate for data with highly-correlated predictors.
+
+```{r}
+# load the package
+library(pls)
+# load data
+data(longley)
+# fit model
+fit <- plsr(Employed~., data=longley, validation="CV")
+# summarize the fit
+summary(fit)
+# make predictions
+predictions <- predict(fit, longley, ncomp=6)
+# summarize accuracy
+mse <- mean((longley$Employed - predictions)^2)
+print(mse)
+```
+
+## Summary
+In this post you discovered 4 recipes for creating linear regression models in R and making predictions using those models.
